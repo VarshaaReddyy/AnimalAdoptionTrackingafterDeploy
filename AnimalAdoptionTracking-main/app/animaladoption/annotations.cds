@@ -17,11 +17,21 @@ annotate CatalogService.UsersSrv with @(
     ],
 
     UI.LineItem : [
-        { Value : firstName },
-        { Value : lastName },
-        { Value : email },
-        { Value : role },
-        { Value : status }
+        { Value : firstName,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
+        { Value : lastName,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
+        { Value : email,
+            ![@HTML5.CssDefaults] : { width : '14rem' }
+        },
+        { Value : role,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
+        { Value : status,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        }
     ]
 );
 
@@ -38,21 +48,21 @@ annotate CatalogService.SheltersSrv with @(
     ],
 
     UI.LineItem : [
-        { Value : shelterName },
-        { Value : city },
-        { Value : state },
-        { Value : capacity },
-        { Value : shelterType },
-        {
-    $Type : 'UI.DataFieldForAction',
-    Action : 'CatalogService.editShelter',
-    Label : 'Edit shelter'
-},
-        {
-    $Type : 'UI.DataFieldForAction',
-    Action : 'CatalogService.EntityContainer/createShelter',
-    Label : 'Create Shelter'
-}
+        { Value : shelterName,
+            ![@HTML5.CssDefaults] : { width : '11rem' }
+        },
+        { Value : city,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
+        { Value : state,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
+        { Value : capacity,
+            ![@HTML5.CssDefaults] : { width : '6rem' }
+        },
+        { Value : shelterType,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        }
     ]
 );
 
@@ -66,9 +76,17 @@ annotate CatalogService.AdoptionsSrv with @(
     },
 
     UI.LineItem : [
-        { Value : adoptionDate },
-        { Value : status },
-        { Value : remarks }
+        { Value : animal_ID, Label : 'Animal', ![@HTML5.CssDefaults] : { width : '8rem' } },
+        { Value : application.applicant.firstName, Label : 'Adopter', ![@HTML5.CssDefaults] : { width : '8rem' } },
+        { Value : adoptionDate,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
+        { Value : status,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
+        { Value : remarks,
+            ![@HTML5.CssDefaults] : { width : '14rem' }
+        }
     ]
 );
 
@@ -81,18 +99,16 @@ annotate CatalogService.InspectionsSrv with @(
     },
 
     UI.LineItem : [
-        { Value : inspectionDate },
-        { Value : inspectionType },
-        { Value : result },
-        {
-    $Type : 'UI.DataFieldForAction',
-    Action : 'CatalogService.editInspection',
-    Label : 'Edit Inspection'
-},
-        {
-    $Type : 'UI.DataFieldForAction',
-    Action : 'CatalogService.EntityContainer/createInspection',
-    Label : 'Create Inspection'
-}
+        { Value : adoption_ID, Label : 'Animal', ![@HTML5.CssDefaults] : { width : '8rem' } },
+        { Value : inspector_ID, Label : 'Inspector', ![@HTML5.CssDefaults] : { width : '8rem' } },
+        { Value : inspectionDate,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
+        { Value : inspectionType,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
+        { Value : result,
+            ![@HTML5.CssDefaults] : { width : '6rem' }
+        }
     ]
 );

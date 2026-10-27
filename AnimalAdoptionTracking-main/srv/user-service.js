@@ -8,7 +8,9 @@ module.exports = cds.service.impl(async function () {
         AdoptionsSrv,
         HealthRecordsSrv,
         SheltersSrv,
-        UsersSrv
+        UsersSrv,
+        InspectionsSrv,
+        ApplicationStatusHistorySrv
     } = this.entities;
 
         // ==========================================================
@@ -114,7 +116,8 @@ module.exports = cds.service.impl(async function () {
                     .from(AdoptionApplicationsSrv)
                     .where({
                         animal_ID: animalID,
-                        applicant_ID: applicantID
+                        applicant_ID: applicantID,
+                        status: { in: ["SUBMITTED", "UNDER_REVIEW", "APPROVED"] }
                     });
 
 
@@ -149,17 +152,26 @@ module.exports = cds.service.impl(async function () {
                 petExperience:
                     petExperience,
 
-                status: "UNDER_REVIEW",
+                ID: cds.utils.uuid(),
 
-                createdAt: new Date(),
-
-                modifiedAt: new Date()
+                // New applications start as Submitted (FRD workflow)
+                status: "SUBMITTED"
             };
 
 
             await INSERT
                 .into(AdoptionApplicationsSrv)
                 .entries(applicationData);
+
+            await INSERT.into(ApplicationStatusHistorySrv).entries({
+                ID: cds.utils.uuid(),
+                application_ID: applicationData.ID,
+                oldStatus: null,
+                newStatus: "SUBMITTED",
+                changedBy: req.user.id,
+                changedAt: new Date(),
+                remarks: "Application submitted"
+            });
 
 
             // --------------------------------------------------
@@ -169,13 +181,7 @@ module.exports = cds.service.impl(async function () {
             const createdApplication =
                 await SELECT.one
                     .from(AdoptionApplicationsSrv)
-                    .where({
-                        animal_ID: animalID,
-                        applicant_ID: applicantID
-                    })
-                    .orderBy({
-                        createdAt: "desc"
-                    });
+                    .where({ ID: applicationData.ID });
 
 
             return createdApplication;
@@ -224,7 +230,7 @@ module.exports = cds.service.impl(async function () {
                     .from(AdoptionApplicationsSrv)
                     .where({
                         applicant_ID: USER_ID,
-                        status: "UNDER_REVIEW"
+                        status: { in: ["SUBMITTED", "UNDER_REVIEW"] }
                     })
                     .columns`count(*) as count`;
 
@@ -239,6 +245,13 @@ module.exports = cds.service.impl(async function () {
                     .columns`count(*) as count`;
 
 
+            const myAdoptions =
+                await SELECT.one
+                    .from(AdoptionsSrv)
+                    .where({ "application.applicant_ID": USER_ID })
+                    .columns`count(*) as count`;
+
+
             return [{
 
                 ID: "USER_DASHBOARD",
@@ -250,63 +263,122 @@ module.exports = cds.service.impl(async function () {
                     Number(pendingApplications.count || 0),
 
                 approvedApplications:
-                    Number(approvedApplications.count || 0)
+                    Number(approvedApplications.count || 0),
+
+                myAdoptions:
+                    Number(myAdoptions.count || 0)
 
             }];
 
         }
     );
 
-    this.on("READ", "AdoptionsSrv", async (req) => {
+    // ==========================================================
+    // HEALTH INFORMATION for adopters (FR-USR-004 / 016 / 017)
+    // ==========================================================
 
-    const USER_ID =
-        await getCurrentUserID(req);
+    const health = require("./lib/health");
 
-    const applications = await SELECT
-        .from(AdoptionApplicationsSrv)
-        .where({
-            applicant_ID: USER_ID
-        })
-        .columns("ID");
+    this.after("READ", "AnimalsSrv", health.addAdoptionEligibility);
+    this.after("READ", "HealthRecordsSrv", health.addCheckupStatus);
 
-    if (!applications.length) {
-        return [];
-    }
 
-    const applicationIDs =
-        applications.map(app => app.ID);
+    // ==========================================================
+    // ROW-LEVEL ACCESS: a user only sees their own records.
+    // "before READ" adds a filter, so search, sorting, $count and
+    // object pages (single record by key) keep working.
+    // ==========================================================
 
-    return await SELECT
-        .from(AdoptionsSrv)
-        .where({
-            application_ID: { in: applicationIDs }
+    this.before("READ", "AdoptionApplicationsSrv", async (req) => {
+        req.query.where({ applicant_ID: await getCurrentUserID(req) });
+    });
+
+    this.before("READ", "AdoptionsSrv", async (req) => {
+        req.query.where({ "application.applicant_ID": await getCurrentUserID(req) });
+    });
+
+    this.before("READ", "InspectionsSrv", async (req) => {
+        req.query.where({ "adoption.application.applicant_ID": await getCurrentUserID(req) });
+    });
+
+    this.before("READ", "ApplicationStatusHistorySrv", async (req) => {
+        req.query.where({ "application.applicant_ID": await getCurrentUserID(req) });
+    });
+
+    this.before("READ", "UsersSrv", async (req) => {
+        req.query.where({ ID: await getCurrentUserID(req) });
+    });
+
+
+    // Users may change only their own profile
+    this.before(["UPDATE", "DELETE"], "UsersSrv", async (req) => {
+        if (req.data.ID && req.data.ID !== await getCurrentUserID(req)) {
+            req.reject(403, "You can only change your own profile.");
+        }
+    });
+
+
+    // Applications: new ones always belong to the user and start Submitted;
+    // they can be changed or deleted only while still Submitted (FR-USR-007)
+    this.before("CREATE", "AdoptionApplicationsSrv", async (req) => {
+        req.data.applicant_ID = await getCurrentUserID(req);
+        req.data.status = "SUBMITTED";
+        req.data.applicationDate = req.data.applicationDate || new Date().toISOString().slice(0, 10);
+    });
+
+    this.before(["UPDATE", "DELETE"], "AdoptionApplicationsSrv", async (req) => {
+        const ID = req.data.ID ?? req.params[0]?.ID ?? req.params[0];
+        const application = await SELECT.one.from(AdoptionApplicationsSrv)
+            .where({ ID, applicant_ID: await getCurrentUserID(req) });
+        if (!application) {
+            req.reject(404, "Application not found");
+        }
+        if (application.status !== "SUBMITTED") {
+            req.reject(400, "Only applications that are still Submitted can be changed.");
+        }
+        delete req.data.status;
+        delete req.data.applicant_ID;
+        delete req.data.reviewedBy_ID;
+        delete req.data.staffRemarks;
+    });
+
+
+    // ==========================================================
+    // WITHDRAW APPLICATION (FR-USR-008): only before review
+    // ==========================================================
+
+    this.on("withdrawApplication", async (req) => {
+
+        const ID = req.params[0].ID ?? req.params[0];
+
+        const application = await SELECT.one.from(AdoptionApplicationsSrv)
+            .where({ ID, applicant_ID: await getCurrentUserID(req) });
+
+        if (!application) {
+            req.reject(404, "Application not found");
+        }
+
+        if (application.status !== "SUBMITTED") {
+            req.reject(400, "Only applications that are still Submitted can be withdrawn.");
+        }
+
+        await UPDATE(AdoptionApplicationsSrv)
+            .set({ status: "WITHDRAWN", staffRemarks: "Withdrawn by applicant" })
+            .where({ ID });
+
+        await INSERT.into(ApplicationStatusHistorySrv).entries({
+            ID: cds.utils.uuid(),
+            application_ID: ID,
+            oldStatus: "SUBMITTED",
+            newStatus: "WITHDRAWN",
+            changedBy: req.user.id,
+            changedAt: new Date(),
+            remarks: "Withdrawn by applicant"
         });
-});
 
-    this.on("READ", "AdoptionApplicationsSrv", async (req) => {
+        return "Application withdrawn";
+    });
 
-    const USER_ID =
-        await getCurrentUserID(req);
-
-    return await SELECT
-        .from(AdoptionApplicationsSrv)
-        .where({
-            applicant_ID: USER_ID
-        });
-});
-
-
-    this.on("READ", "UsersSrv", async (req) => {
-
-    const USER_ID =
-        await getCurrentUserID(req);
-
-    return await SELECT
-        .from(UsersSrv)
-        .where({
-            ID: USER_ID
-        });
-});
 
     this.on("editProfile", async (req) => {
 
@@ -325,17 +397,16 @@ module.exports = cds.service.impl(async function () {
     } = req.data;
 
     await UPDATE(UsersSrv)
-        .set({
+        .set(Object.fromEntries(Object.entries({
             firstName,
             lastName,
-            email,
+            // email is the login identity and is not changed here
             phoneNumber,
             address,
             city,
             state,
-            postalCode,
-            modifiedAt: new Date()
-        })
+            postalCode
+        }).filter(([, value]) => value !== undefined && value !== null && value !== "")))
         .where({
             ID: USER_ID
         });

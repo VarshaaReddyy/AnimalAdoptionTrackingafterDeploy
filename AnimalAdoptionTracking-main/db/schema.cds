@@ -137,6 +137,10 @@ entity AdoptionApplications : AuditFields {
 
     adoption            : Association to one Adoptions
                           on adoption.application = $self;
+
+    // Review / status history of this application (FR-ADM-009, FR-USR-011)
+    history             : Association to many ApplicationStatusHistory
+                          on history.application = $self;
 }
 
 
@@ -182,6 +186,10 @@ entity HealthRecords : AuditFields{
     remarks             : Description;
     medicalDocument     : String(500);
 
+    // Change history of this health record (FR-ADM-015)
+    changes             : Association to many HealthRecordChanges
+                          on changes.healthRecord = $self;
+
 
 }
 
@@ -204,4 +212,62 @@ entity Inspections : AuditFields{
 
     inspectionDocument  : String(500);
 
+}
+
+
+// ==========================================================
+// APPLICATION STATUS HISTORY (audit trail, FR-ADM-009)
+// One row is written on every status change of an application.
+// ==========================================================
+
+entity ApplicationStatusHistory {
+
+    key ID              : GUID;
+
+    application         : Association to AdoptionApplications;
+
+    oldStatus           : ApplicationStatus;
+    newStatus           : ApplicationStatus;
+
+    changedBy           : String(255);
+    changedAt           : Timestamp;
+
+    remarks             : Description;
+}
+
+
+// ==========================================================
+// HEALTH RECORD CHANGE HISTORY (FR-ADM-015)
+// One row per changed field whenever a health record is saved.
+// ==========================================================
+
+entity HealthRecordChanges {
+
+    key ID              : GUID;
+
+    healthRecord        : Association to HealthRecords;
+
+    field               : String(60);
+    oldValue            : String(500);
+    newValue            : String(500);
+
+    changedBy           : String(255);
+    changedAt           : Timestamp;
+}
+
+
+// ==========================================================
+// COMPUTED FIELDS (not stored; filled when the data is read)
+// ==========================================================
+
+extend Animals with {
+    // FR-ADM-016 / FR-USR-016: can this animal be adopted right now?
+    virtual adoptionEligibility    : String(100);
+    virtual eligibilityCriticality : Integer;
+}
+
+extend HealthRecords with {
+    // FR-ADM-014 / FR-USR-017: next checkup scheduled / due soon / overdue
+    virtual checkupStatus          : String(30);
+    virtual checkupCriticality     : Integer;
 }

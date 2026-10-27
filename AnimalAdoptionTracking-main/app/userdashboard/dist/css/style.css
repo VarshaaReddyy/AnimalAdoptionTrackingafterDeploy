@@ -1,304 +1,567 @@
+/* ==========================================================
+   AdoptFlow - Adopter dashboard (matches the Figma design)
+   Colours: navy sidebar, green accent, light grey background
+   ========================================================== */
 
-/* =========================================================
-   USER DASHBOARD
-   ========================================================= */
-
-.userDashboardPage {
-    background: #f4f6f8;
+:root {
+    --af-navy: #10263F;
+    --af-navy-2: #1A3555;
+    --af-green: #3AA757;
+    --af-green-soft: #E8F5EC;
+    --af-bg: #F4F6F5;
+    --af-card: #FFFFFF;
+    --af-border: #E3E8EE;
+    --af-text: #1D2939;
+    --af-muted: #667085;
 }
 
-
-/* =========================================================
-   MAIN CONTAINER
-   ========================================================= */
-
-.dashboardContainer {
-    padding: 28px 30px 40px 30px;
+.afPage .sapMPageEnableScrolling,
+.afPage > section {
+    background: var(--af-bg);
 }
 
+/* ---------- Shell: sidebar + main ---------- */
 
-/* =========================================================
-   WELCOME SECTION
-   ========================================================= */
-
-.welcomeSection {
-    margin-bottom: 20px;
-}
-
-.welcomeTitle {
-    font-size: 30px !important;
-    font-weight: 700 !important;
-    color: #172b4d !important;
-}
-
-.welcomeText {
-    font-size: 16px;
-    color: #64748b;
-    margin-top: 5px;
-}
-
-
-/* =========================================================
-   SECTION TITLES
-   ========================================================= */
-
-.sectionTitle {
-    font-size: 25px !important;
-    font-weight: 700 !important;
-    color: #172b4d !important;
-    margin-top: 18px !important;
-    margin-bottom: 14px !important;
-}
-
-.servicesSectionTitle {
-    margin-top: 25px !important;
-}
-
-
-/* =========================================================
-   KPI ROW
-   ========================================================= */
-
-.kpiRow {
+.afShell {
+    display: flex;
+    min-height: 100%;
     width: 100%;
-    gap: 18px;
 }
 
-
-/* =========================================================
-   KPI TILES
-   ========================================================= */
-
-.dashboardKpiTile {
-    width: 32%;
-    min-width: 250px;
-    height: 190px;
-
-    border-radius: 16px !important;
-
-    box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.08);
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-
-    overflow: hidden;
+.afSidebar {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 240px;
+    background: var(--af-navy);
+    padding: 20px 14px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    box-sizing: border-box;
 }
 
-
-/* Hover effect */
-
-.dashboardKpiTile:hover {
-    transform: translateY(-3px);
-
-    box-shadow:
-        0 8px 22px rgba(0, 0, 0, 0.13);
+.afMain {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 28px 32px 24px;
+    box-sizing: border-box;
 }
 
+/* ---------- Sidebar ---------- */
 
-/* Applications */
-
-.applicationsTile {
-    border-top: 5px solid #2563eb;
+.afBrand {
+    padding: 4px 6px 22px;
 }
 
-
-/* Pending */
-
-.pendingTile {
-    border-top: 5px solid #f59e0b;
+.afBrandIcon {
+    background: var(--af-green);
+    color: #FFFFFF !important;
+    border-radius: 10px;
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    font-size: 18px !important;
+    text-align: center;
+    margin-right: 10px;
 }
 
-
-/* Approved */
-
-.approvedTile {
-    border-top: 5px solid #16a34a;
-}
-
-
-/* =========================================================
-   SERVICES ROW
-   ========================================================= */
-
-.servicesRow {
-    width: 100%;
-    gap: 16px;
-}
-
-
-/* =========================================================
-   SERVICE TILES
-   ========================================================= */
-
-.serviceTile {
-    width: 24%;
-    min-width: 220px;
-    height: 190px;
-
-    border-radius: 16px !important;
-
-    box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.08);
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-
-    overflow: hidden;
-}
-
-
-.serviceTile:hover {
-    transform: translateY(-4px);
-
-    box-shadow:
-        0 9px 22px rgba(0, 0, 0, 0.14);
-}
-
-
-/* =========================================================
-   SERVICE CARD COLORS
-   ========================================================= */
-
-.animalsServiceTile {
-    border-top: 5px solid #7c3aed;
-}
-
-
-.applicationsServiceTile {
-    border-top: 5px solid #2563eb;
-}
-
-
-.adoptionsServiceTile {
-    border-top: 5px solid #16a34a;
-}
-
-
-.profileServiceTile {
-    border-top: 5px solid #0891b2;
-}
-
-
-/* =========================================================
-   APPLICATIONS CARD
-   ========================================================= */
-
-.applicationsCard {
-    margin-top: 30px;
-
-    background: #ffffff;
-
-    border-radius: 16px;
-
-    padding: 25px;
-
-    box-shadow:
-        0 4px 16px rgba(0, 0, 0, 0.08);
-}
-
-
-/* =========================================================
-   APPLICATION HEADER
-   ========================================================= */
-
-.applicationsTitle {
-    font-size: 24px !important;
-    font-weight: 700 !important;
-    color: #172b4d !important;
-}
-
-.applicationsSubtitle {
-    color: #64748b;
-    font-size: 14px;
-    margin-top: 4px;
-}
-
-
-/* =========================================================
-   TABLE
-   ========================================================= */
-
-.applicationsTable {
-    margin-top: 20px;
-}
-
-
-/* Table header */
-
-.applicationsTable .sapMListTblHeaderCell {
-    background: #f8fafc;
-}
-
-
-/* Table header text */
-
-.applicationsTable .sapMListTblHeaderCell .sapMText {
+.afBrandName.sapMText {
+    color: #FFFFFF;
     font-weight: 700;
-    color: #334155;
+    font-size: 17px;
 }
 
-
-/* Table rows */
-
-.applicationsTable .sapMListTblRow {
-    border-bottom: 1px solid #e5e7eb;
+.afBrandSub.sapMText {
+    color: #9FB0C4;
+    font-size: 12px;
 }
 
-
-/* =========================================================
-   RESPONSIVE DESIGN
-   ========================================================= */
-
-@media (max-width: 1100px) {
-
-    .dashboardKpiTile {
-        min-width: 220px;
-    }
-
-    .serviceTile {
-        min-width: 200px;
-    }
-
+.afNavSection.sapMText {
+    color: #7F93AB;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 0 10px 8px;
 }
 
-
-@media (max-width: 850px) {
-
-    .kpiRow,
-    .servicesRow {
-        flex-wrap: wrap;
-    }
-
-    .dashboardKpiTile {
-        width: 48%;
-        margin-bottom: 15px;
-    }
-
-    .serviceTile {
-        width: 48%;
-        margin-bottom: 15px;
-    }
-
+.afNav.sapMList,
+.afNav .sapMListUl,
+.afNav .sapMLIB {
+    background: transparent !important;
+    border: none !important;
 }
 
+.afNav .sapMLIB.afNavItem {
+    border-radius: 8px;
+    margin-bottom: 2px;
+    padding: 0 10px;
+    min-height: 40px;
+}
+
+.afNav .sapMLIB.afNavItem:hover {
+    background: var(--af-navy-2) !important;
+}
+
+.afNav .sapMLIB.afNavActive {
+    background: #1F4E79 !important;
+    box-shadow: inset 3px 0 0 var(--af-green);
+}
+
+.afNavIcon {
+    color: #C7D3E0 !important;
+    font-size: 16px !important;
+    margin-right: 12px;
+    width: 18px;
+}
+
+.afNavText.sapMText {
+    color: #E6EDF5;
+    font-size: 14px;
+    flex: 1;
+}
+
+.afNavActive .afNavText.sapMText,
+.afNavActive .afNavIcon {
+    color: #FFFFFF !important;
+    font-weight: 600;
+}
+
+.afNavBadge.sapMText {
+    background: var(--af-green);
+    color: #FFFFFF;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 1px 8px;
+    margin-left: 8px;
+}
+
+/* ---------- Header ---------- */
+
+.afHeader {
+    margin-bottom: 14px;
+}
+
+.afEyebrow.sapMText {
+    color: var(--af-green);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.afGreeting.sapMTitle {
+    font-size: 28px !important;
+    font-weight: 700;
+    color: var(--af-text);
+    margin: 4px 0;
+}
+
+.afSubtitle.sapMText,
+.afMuted.sapMText {
+    color: var(--af-muted);
+    font-size: 13px;
+}
+
+.afHeaderActions .sapMBtn {
+    margin-left: 10px;
+}
+
+.afBtnPrimary .sapMBtnInner {
+    background: var(--af-green) !important;
+    border-color: var(--af-green) !important;
+    color: #FFFFFF !important;
+}
+
+.afBtnPrimary .sapMBtnIcon {
+    color: #FFFFFF !important;
+}
+
+.afLiveRow {
+    margin-bottom: 18px;
+}
+
+.afLiveDot {
+    color: var(--af-green) !important;
+    font-size: 9px !important;
+    margin-right: 6px;
+}
+
+.afLiveText.sapMText {
+    color: var(--af-text);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Cards ---------- */
+
+.afCard {
+    background: var(--af-card);
+    border: 1px solid var(--af-border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.afCardHead {
+    margin-bottom: 12px;
+}
+
+.afCardTitle.sapMTitle {
+    font-size: 16px !important;
+    font-weight: 700;
+    color: var(--af-text);
+}
+
+.afLink.sapMLnk {
+    color: var(--af-green) !important;
+    font-weight: 600;
+}
+
+.afStrong.sapMText {
+    font-weight: 600;
+    color: var(--af-text);
+}
+
+/* ---------- KPI cards ---------- */
+
+.afKpiGrid {
+    display: grid !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.afKpi {
+    padding: 16px;
+}
+
+.afKpiIcon {
+    width: 34px !important;
+    height: 34px !important;
+    line-height: 34px !important;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px !important;
+    margin-right: 10px;
+}
+
+.afIconGreen  { background: #E8F5EC; color: #2E8B47 !important; }
+.afIconTeal   { background: #E3F4F4; color: #0F8B8D !important; }
+.afIconPurple { background: #EFEAFE; color: #6E4BD8 !important; }
+.afIconOrange { background: #FEF1E3; color: #D9781A !important; }
+.afIconBlue   { background: #E6F0FB; color: #2F6FB3 !important; }
+
+.afKpiLabel.sapMText {
+    color: var(--af-muted);
+    font-size: 13px;
+}
+
+.afKpiValue.sapMText {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--af-text);
+    margin: 10px 0 4px;
+}
+
+.afKpiFoot.sapMText {
+    font-size: 12px;
+    color: var(--af-muted);
+}
+
+.afFootGood.sapMText { color: #2E8B47; }
+.afFootWarn.sapMText { color: #D9781A; }
+
+/* ---------- Two-column chart rows ---------- */
+
+.afTwoCol {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.afTwoColWide {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+}
+
+/* Donut with total in the centre + legend on the right */
+
+.afDonutRow {
+    width: 100%;
+}
+
+.afDonutWrap {
+    position: relative;
+    flex: 0 0 55%;
+    max-width: 55%;
+}
+
+.afDonutCenter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.afDonutTotal.sapMText {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--af-text);
+}
+
+.afLegend {
+    flex: 1 1 auto;
+    background: transparent !important;
+}
+
+.afLegend .sapMLIB {
+    background: transparent !important;
+    padding: 0 4px;
+    min-height: 32px;
+}
+
+.afLegendRow {
+    width: 100%;
+}
+
+.afLegendDot {
+    font-size: 10px !important;
+    margin-right: 8px;
+}
+
+.afLegendCount.sapMText {
+    font-weight: 700;
+    color: var(--af-text);
+}
+
+/* Shelter capacity progress bars */
+
+.afShelterList,
+.afShelterList .sapMLIB {
+    background: transparent !important;
+}
+
+.afShelterList .sapMLIB {
+    padding: 0;
+}
+
+.afShelterRow {
+    width: 100%;
+    padding: 8px 0 4px;
+}
+
+.afProgress.sapMPI {
+    margin: 8px 0 0 !important;
+    border-radius: 6px;
+}
+
+/* ---------- Recent activity tables ---------- */
+
+.afSectionHead {
+    margin: 10px 0 12px;
+}
+
+.afSectionTitle.sapMTitle {
+    font-size: 20px !important;
+    font-weight: 700;
+    color: var(--af-text);
+}
+
+.afTableCard {
+    margin-bottom: 16px;
+    padding-bottom: 6px;
+}
+
+.afTable .sapMListTblHeader,
+.afTable .sapMListTblHeaderCell {
+    background: #F8FAFB !important;
+}
+
+.afIdText.sapMText {
+    color: var(--af-green);
+    font-weight: 600;
+}
+
+.afFooter {
+    padding: 8px 2px 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1400px) {
+    .afKpiGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1024px) {
+    .afSidebar { display: none; }
+    .afTwoCol, .afTwoColWide { grid-template-columns: minmax(0, 1fr); }
+    .afMain { padding: 20px 16px; }
+}
 
 @media (max-width: 600px) {
+    .afKpiGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .afDonutWrap { flex-basis: 100%; max-width: 100%; }
+    .afDonutRow { flex-wrap: wrap; }
+}
 
-    .dashboardContainer {
-        padding: 18px;
-    }
+/* Legend rows use the full width; no state icons on the capacity bars */
+.afLegend { flex: 1 1 45%; min-width: 0; }
+.afLegend .sapMLIBContent,
+.afLegend .sapMCLI .sapMLIBContent > div { width: 100%; }
+.afLegendRow > :first-child { margin-right: 16px; }
+.afProgress::before, .afProgress::after,
+.afProgress .sapMPIBarRemaining::before, .afProgress .sapMPIBarRemaining::after,
+.afProgress .sapMPIBar::before, .afProgress .sapMPIBar::after { display: none !important; content: none !important; }
+.afPage .sapMObjStatus { white-space: nowrap; }
 
-    .dashboardKpiTile,
-    .serviceTile {
-        width: 100%;
-        min-width: 100%;
-    }
+/* ==========================================================
+   Adopter dashboard extras
+   ========================================================== */
 
-    .welcomeTitle {
-        font-size: 24px !important;
-    }
+.udKpiGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
 
+.udHero {
+    background: linear-gradient(120deg, #2E8B47 0%, #3AA757 55%, #59B86F 100%);
+    border-radius: 16px;
+    padding: 30px 34px;
+    margin-bottom: 18px;
+    color: #FFFFFF;
+    overflow: hidden;
+}
+
+.udHeroText { max-width: 60%; }
+
+.udHeroEyebrow.sapMText {
+    color: #D7F2DE;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.udHeroTitle.sapMTitle {
+    color: #FFFFFF !important;
+    font-size: 32px !important;
+    font-weight: 700;
+    margin: 6px 0;
+}
+
+.udHeroSub.sapMText {
+    color: #EAF7EE;
+    font-size: 14px;
+}
+
+.udHeroButtons { margin-top: 18px; }
+.udHeroButtons .sapMBtn { margin-right: 10px; }
+
+.udBtnLight .sapMBtnInner {
+    background: #FFFFFF !important;
+    border-color: #FFFFFF !important;
+    color: #2E8B47 !important;
+    font-weight: 600;
+}
+
+.udBtnGhost .sapMBtnInner {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    color: #FFFFFF !important;
+}
+
+.udHeroPhotoBox { position: relative; }
+
+img.udHeroPhoto {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 4px solid rgba(255, 255, 255, 0.85);
+}
+
+.udHeroChip {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    padding: 6px 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.udHeroChipValue.sapMText {
+    color: #2E8B47;
+    font-size: 20px;
+    font-weight: 700;
+    margin-right: 6px;
+}
+
+.udHeroChipText.sapMText {
+    color: var(--af-muted);
+    font-size: 11px;
+    max-width: 80px;
+}
+
+.udQuick { padding: 14px 16px; }
+
+.udQuickTitle.sapMLnk {
+    color: var(--af-text) !important;
+    font-weight: 700;
+}
+
+.udQuickArrow {
+    color: var(--af-muted) !important;
+    cursor: pointer;
+}
+
+.udList,
+.udList .sapMLIB { background: transparent !important; }
+.udList .sapMLIB { padding: 0 2px; }
+
+.udListRow {
+    width: 100%;
+    padding: 8px 0;
+}
+
+img.udThumb {
+    border-radius: 10px;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+.udCta {
+    background: #12301E;
+    border-radius: 16px;
+    padding: 26px 32px;
+    margin: 4px 0 16px;
+}
+
+.udCtaTitle.sapMTitle {
+    color: #FFFFFF !important;
+    font-size: 24px !important;
+    margin: 6px 0 14px;
+}
+
+.udCtaPhotos { position: relative; }
+
+img.udCtaPhoto {
+    width: 92px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 3px solid #FFFFFF;
+}
+
+img.udCtaPhotoLeft { transform: rotate(-8deg); }
+.udCtaPhotoMid  { margin-left: -18px; z-index: 1; }
+img.udCtaPhotoRight { transform: rotate(8deg); }
+.udCtaPhotoRight { margin-left: -18px; }
+
+@media (max-width: 1024px) {
+    .udKpiGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .udHeroText { max-width: 100%; }
+    .udHeroPhotoBox, .udCtaPhotos { display: none; }
 }

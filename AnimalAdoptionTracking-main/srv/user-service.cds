@@ -1,4 +1,5 @@
 using { db as my } from '../db/schema';
+using from '../db/statustexts';
 
 using {
     db.common.Description
@@ -33,7 +34,32 @@ service UserCatalogService {
     // ==========================================================
 
     entity AdoptionApplicationsSrv
-        as projection on my.AdoptionApplications;
+        as projection on my.AdoptionApplications
+        actions {
+            // Withdraw an own application before review (FR-USR-008)
+            action withdrawApplication() returns String;
+        };
+
+
+    // ==========================================================
+    // APPLICATION STATUS HISTORY (own applications only, FR-USR-011)
+    // ==========================================================
+
+    @readonly
+    entity ApplicationStatusHistorySrv
+        as projection on my.ApplicationStatusHistory;
+
+
+    // Readable texts for status codes (display + dropdowns)
+    @readonly
+    entity StatusTexts as projection on my.StatusTexts;
+
+    // ==========================================================
+    // POST-ADOPTION INSPECTIONS (own adoptions only, FR-USR-019)
+    // ==========================================================
+
+    @readonly
+    entity InspectionsSrv as projection on my.Inspections;
 
 
     // ==========================================================
@@ -96,6 +122,7 @@ service UserCatalogService {
         myApplications         : Integer;
         pendingApplications    : Integer;
         approvedApplications   : Integer;
+        myAdoptions            : Integer;
     }
 
 }

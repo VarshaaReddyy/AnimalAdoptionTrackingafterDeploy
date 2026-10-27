@@ -1,350 +1,292 @@
-
 <mvc:View
     controllerName="animal.adoption.userdashboard.controller.Dashboard"
     xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
     xmlns="sap.m">
 
-    <Page
-        id="userDashboardPage"
-        title="Animal Adoption Tracker"
-        class="userDashboardPage">
-
+    <Page id="userDashboardPage" showHeader="false" class="afPage">
         <content>
 
-            <VBox
-                id="userDashboardMainVBox"
-                class="dashboardContainer">
+            <HBox id="afShell" renderType="Bare" class="afShell">
 
-                <!-- WELCOME -->
-                <VBox
-                    id="userDashboardWelcomeBox"
-                    class="welcomeSection">
+                <!-- ============================================= -->
+                <!-- SIDEBAR                                       -->
+                <!-- ============================================= -->
+                <VBox id="afSidebar" renderType="Bare" class="afSidebar">
 
-                    <Title
-                        id="userDashboardWelcomeTitle"
-                        text="Welcome to Animal Adoption Tracker"
-                        level="H1"
-                        class="welcomeTitle" />
+                    <HBox id="afBrand" alignItems="Center" class="afBrand">
+                        <core:Icon id="afBrandIcon" src="sap-icon://heart" class="afBrandIcon"/>
+                        <VBox id="afBrandText">
+                            <Text id="afBrandName" text="AdoptFlow" class="afBrandName"/>
+                            <Text id="afBrandSub" text="Animal Welfare Suite" class="afBrandSub"/>
+                        </VBox>
+                    </HBox>
 
-                    <Text
-                        id="userDashboardWelcomeText"
-                        text="Manage your applications, adoptions and profile in one place."
-                        class="welcomeText" />
+                    <Text id="afNavSection" text="MY ADOPTION JOURNEY" class="afNavSection"/>
 
+                    <List id="afNav" showSeparators="None" class="afNav">
+                        <CustomListItem id="navDashboard" type="Active" press=".onRefresh" class="afNavItem afNavActive">
+                            <HBox id="navDashboardBox" alignItems="Center">
+                                <core:Icon id="navDashboardIcon" src="sap-icon://home" class="afNavIcon"/>
+                                <Text id="navDashboardText" text="Dashboard" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navBrowse" type="Active" press=".onBrowseAnimalsPress" class="afNavItem">
+                            <HBox id="navBrowseBox" alignItems="Center">
+                                <core:Icon id="navBrowseIcon" src="sap-icon://heart-2" class="afNavIcon"/>
+                                <Text id="navBrowseText" text="Browse Animals" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navApplications" type="Active" press=".onMyApplicationsPress" class="afNavItem">
+                            <HBox id="navApplicationsBox" alignItems="Center">
+                                <core:Icon id="navApplicationsIcon" src="sap-icon://form" class="afNavIcon"/>
+                                <Text id="navApplicationsText" text="My Applications" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navAdoptions" type="Active" press=".onMyAdoptionsPress" class="afNavItem">
+                            <HBox id="navAdoptionsBox" alignItems="Center">
+                                <core:Icon id="navAdoptionsIcon" src="sap-icon://family-care" class="afNavIcon"/>
+                                <Text id="navAdoptionsText" text="My Adoptions" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navProfile" type="Active" press=".onProfilePress" class="afNavItem">
+                            <HBox id="navProfileBox" alignItems="Center">
+                                <core:Icon id="navProfileIcon" src="sap-icon://person-placeholder" class="afNavIcon"/>
+                                <Text id="navProfileText" text="Profile" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                    </List>
                 </VBox>
 
 
-                <!-- SUMMARY -->
-                <Title
-                    id="userDashboardSummaryTitle"
-                    text="My Summary"
-                    level="H2"
-                    class="sectionTitle" />
+                <!-- ============================================= -->
+                <!-- MAIN AREA                                     -->
+                <!-- ============================================= -->
+                <VBox id="afMain" renderType="Bare" class="afMain">
 
+                    <MessageStrip id="afError" text="{view>/errorText}" type="Error" showIcon="true"
+                                  visible="{= !!${view>/errorText} }" class="sapUiSmallMarginBottom"/>
 
-                <!-- KPI CARDS -->
-                <HBox
-                    id="userDashboardSummaryHBox"
-                    width="100%"
-                    justifyContent="SpaceBetween"
-                    wrap="NoWrap"
-                    class="kpiRow">
-
-
-                    <!-- APPLICATIONS -->
-                    <GenericTile
-                        id="userDashboardApplicationsTile"
-                        header="My Applications"
-                        class="dashboardKpiTile applicationsTile">
-
-                        <TileContent
-                            id="userDashboardApplicationsContent">
-
-                            <NumericContent
-                                id="userDashboardApplicationsValue"
-                                value="{dashboard>/myApplications}"
-                                icon="sap-icon://document-text"
-                                valueColor="Neutral" />
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- PENDING -->
-                    <GenericTile
-                        id="userDashboardPendingTile"
-                        header="Pending Applications"
-                        class="dashboardKpiTile pendingTile">
-
-                        <TileContent
-                            id="userDashboardPendingContent">
-
-                            <NumericContent
-                                id="userDashboardPendingValue"
-                                value="{dashboard>/pendingApplications}"
-                                icon="sap-icon://pending"
-                                valueColor="Critical" />
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- APPROVED -->
-                    <GenericTile
-                        id="userDashboardApprovedTile"
-                        header="Approved Applications"
-                        class="dashboardKpiTile approvedTile">
-
-                        <TileContent
-                            id="userDashboardApprovedContent">
-
-                            <NumericContent
-                                id="userDashboardApprovedValue"
-                                value="{dashboard>/approvedApplications}"
-                                icon="sap-icon://accept"
-                                valueColor="Good" />
-
-                        </TileContent>
-
-                    </GenericTile>
-
-                </HBox>
-
-
-                <!-- SERVICES -->
-                <Title
-                    id="userDashboardServicesTitle"
-                    text="Services"
-                    level="H2"
-                    class="sectionTitle servicesSectionTitle" />
-
-
-                <HBox
-                    id="userDashboardServicesHBox"
-                    width="100%"
-                    justifyContent="SpaceBetween"
-                    wrap="NoWrap"
-                    class="servicesRow">
-
-
-                    <!-- BROWSE ANIMALS -->
-                    <GenericTile
-                        id="userDashboardBrowseAnimalsTile"
-                        header="Browse Animals"
-                        subheader="View Available Animals"
-                        press=".onBrowseAnimalsPress"
-                        class="serviceTile animalsServiceTile">
-
-                        <TileContent
-                            id="userDashboardBrowseAnimalsContent">
-
-                            <ImageContent
-                                id="userDashboardBrowseAnimalsIcon"
-                                src="sap-icon://pet-care" />
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- APPLICATIONS -->
-                    <GenericTile
-                        id="userDashboardApplicationsServiceTile"
-                        header="My Applications"
-                        subheader="Track Requests"
-                        press=".onMyApplicationsPress"
-                        class="serviceTile applicationsServiceTile">
-
-                        <TileContent
-                            id="userDashboardApplicationsServiceContent">
-
-                            <ImageContent
-                                id="userDashboardApplicationsServiceIcon"
-                                src="sap-icon://document-text" />
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- ADOPTIONS -->
-                    <GenericTile
-                        id="userDashboardAdoptionsTile"
-                        header="My Adoptions"
-                        subheader="Adoption History"
-                        press=".onMyAdoptionsPress"
-                        class="serviceTile adoptionsServiceTile">
-
-                        <TileContent
-                            id="userDashboardAdoptionsContent">
-
-                            <ImageContent
-                                id="userDashboardAdoptionsIcon"
-                                src="sap-icon://accept" />
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- PROFILE -->
-                    <GenericTile
-                        id="userDashboardProfileTile"
-                        header="My Profile"
-                        subheader="Manage Profile"
-                        press=".onProfilePress"
-                        class="serviceTile profileServiceTile">
-
-                        <TileContent
-                            id="userDashboardProfileContent">
-
-                            <ImageContent
-                                id="userDashboardProfileIcon"
-                                src="sap-icon://employee" />
-
-                        </TileContent>
-
-                    </GenericTile>
-
-                </HBox>
-
-
-                <!-- APPLICATIONS SECTION -->
-
-                <VBox
-                    id="userApplicationsSection"
-                    class="applicationsCard">
-
-                    <HBox
-                        id="myApplicationsHeader"
-                        justifyContent="SpaceBetween"
-                        alignItems="Center">
-
-                        <VBox
-                            id="myApplicationsHeadingBox">
-
-                            <Title
-                                id="myApplicationsTitle"
-                                text="My Adoption Applications"
-                                level="H2"
-                                class="applicationsTitle" />
-
-                            <Text
-                                id="myApplicationsSubtitle"
-                                text="Track the status of your adoption requests."
-                                class="applicationsSubtitle" />
-
+                    <!-- Welcome banner -->
+                    <HBox id="udHero" justifyContent="SpaceBetween" alignItems="Center" class="udHero">
+                        <VBox id="udHeroText" class="udHeroText">
+                            <Text id="udHeroEyebrow" text="YOUR ADOPTION JOURNEY" class="udHeroEyebrow"/>
+                            <Title id="udHeroTitle" level="H1" class="udHeroTitle"
+                                   text="{= 'Welcome back' + (${view>/name} ? ', ' + ${view>/name} : '') }"/>
+                            <Text id="udHeroSub" text="Here are the latest updates on your applications, and animals waiting to meet you."
+                                  class="udHeroSub"/>
+                            <HBox id="udHeroButtons" class="udHeroButtons">
+                                <Button id="udBtnFind" text="Find a companion" press=".onBrowseAnimalsPress" class="udBtnLight"/>
+                                <Button id="udBtnTrack" text="Track applications" press=".onMyApplicationsPress" class="udBtnGhost"/>
+                            </HBox>
                         </VBox>
-
-
-                        <Button
-                            id="myApplicationsRefreshButton"
-                            text="Refresh"
-                            icon="sap-icon://refresh"
-                            type="Transparent"
-                            press=".onRefresh" />
-
+                        <VBox id="udHeroPhotoBox" class="udHeroPhotoBox">
+                            <Image id="udHeroPhoto" src="images/dog.jpg" alt="Dog waiting for a home" class="udHeroPhoto"/>
+                            <HBox id="udHeroChip" alignItems="Center" class="udHeroChip">
+                                <Text id="udHeroChipValue" text="{view>/availableCount}" class="udHeroChipValue"/>
+                                <Text id="udHeroChipText" text="animals available now" class="udHeroChipText"/>
+                            </HBox>
+                        </VBox>
                     </HBox>
 
 
-                    <Table
-                        id="myApplicationsTable"
-                        items="{applications>/}"
-                        class="applicationsTable">
+                    <!-- KPI cards -->
+                    <HBox id="udKpis" renderType="Bare" class="afKpiGrid udKpiGrid">
 
-                        <columns>
+                        <VBox id="kpiApps" class="afCard afKpi afClickable">
+                            <HBox id="kpiAppsHead" alignItems="Center">
+                                <core:Icon id="kpiAppsIcon" src="sap-icon://form" class="afKpiIcon afIconGreen"/>
+                                <Text id="kpiAppsLabel" text="My Applications" class="afKpiLabel"/>
+                            </HBox>
+                            <Text id="kpiAppsValue" text="{dashboard>/myApplications}" class="afKpiValue"/>
+                            <Link id="kpiAppsLink" text="View applications" press=".onMyApplicationsPress" class="afLink"/>
+                        </VBox>
 
-                            <Column
-                                id="animalColumn">
+                        <VBox id="kpiAdoptions" class="afCard afKpi">
+                            <HBox id="kpiAdoptionsHead" alignItems="Center">
+                                <core:Icon id="kpiAdoptionsIcon" src="sap-icon://family-care" class="afKpiIcon afIconTeal"/>
+                                <Text id="kpiAdoptionsLabel" text="Approved Adoptions" class="afKpiLabel"/>
+                            </HBox>
+                            <Text id="kpiAdoptionsValue" text="{dashboard>/myAdoptions}" class="afKpiValue"/>
+                            <Link id="kpiAdoptionsLink" text="Forever homes found" press=".onMyAdoptionsPress" class="afLink"/>
+                        </VBox>
 
-                                <Text
-                                    id="animalColumnText"
-                                    text="Animal" />
+                        <VBox id="kpiPending" class="afCard afKpi">
+                            <HBox id="kpiPendingHead" alignItems="Center">
+                                <core:Icon id="kpiPendingIcon" src="sap-icon://pending" class="afKpiIcon afIconOrange"/>
+                                <Text id="kpiPendingLabel" text="Pending Applications" class="afKpiLabel"/>
+                            </HBox>
+                            <Text id="kpiPendingValue" text="{dashboard>/pendingApplications}" class="afKpiValue"/>
+                            <Text id="kpiPendingFoot" text="Submitted or under review" class="afKpiFoot afFootWarn"/>
+                        </VBox>
 
-                            </Column>
-
-                            <Column
-                                id="applicationDateColumn">
-
-                                <Text
-                                    id="applicationDateColumnText"
-                                    text="Application Date" />
-
-                            </Column>
-
-                            <Column
-                                id="applicationStatusColumn">
-
-                                <Text
-                                    id="applicationStatusColumnText"
-                                    text="Status" />
-
-                            </Column>
-
-                            <Column
-                                id="applicationReasonColumn">
-
-                                <Text
-                                    id="applicationReasonColumnText"
-                                    text="Reason" />
-
-                            </Column>
-
-                            <Column
-                                id="housingDetailsColumn">
-
-                                <Text
-                                    id="housingDetailsColumnText"
-                                    text="Housing Details" />
-
-                            </Column>
-
-                        </columns>
+                        <VBox id="kpiAvailable" class="afCard afKpi">
+                            <HBox id="kpiAvailableHead" alignItems="Center">
+                                <core:Icon id="kpiAvailableIcon" src="sap-icon://heart-2" class="afKpiIcon afIconPurple"/>
+                                <Text id="kpiAvailableLabel" text="Animals Available" class="afKpiLabel"/>
+                            </HBox>
+                            <Text id="kpiAvailableValue" text="{view>/availableCount}" class="afKpiValue"/>
+                            <Link id="kpiAvailableLink" text="Browse animals" press=".onBrowseAnimalsPress" class="afLink"/>
+                        </VBox>
+                    </HBox>
 
 
-                        <items>
+                    <!-- Quick actions -->
+                    <VBox id="udQuickHead" class="afSectionHead">
+                        <Title id="udQuickTitle" text="Quick actions" level="H2" class="afSectionTitle"/>
+                        <Text id="udQuickSub" text="Everything you need for your adoption journey" class="afMuted"/>
+                    </VBox>
 
-                            <ColumnListItem
-                                id="applicationListItemTemplate">
+                    <HBox id="udQuick" renderType="Bare" class="afKpiGrid udKpiGrid">
+                        <HBox id="qaBrowse" alignItems="Center" justifyContent="SpaceBetween" class="afCard udQuick">
+                            <HBox id="qaBrowseLeft" alignItems="Center">
+                                <core:Icon id="qaBrowseIcon" src="sap-icon://heart-2" class="afKpiIcon afIconGreen"/>
+                                <VBox id="qaBrowseText">
+                                    <Link id="qaBrowseTitle" text="Browse Animals" press=".onBrowseAnimalsPress" class="udQuickTitle"/>
+                                    <Text id="qaBrowseSub" text="Meet your perfect companion" class="afMuted"/>
+                                </VBox>
+                            </HBox>
+                            <core:Icon id="qaBrowseArrow" src="sap-icon://navigation-right-arrow" press=".onBrowseAnimalsPress" class="udQuickArrow"/>
+                        </HBox>
+                        <HBox id="qaApps" alignItems="Center" justifyContent="SpaceBetween" class="afCard udQuick">
+                            <HBox id="qaAppsLeft" alignItems="Center">
+                                <core:Icon id="qaAppsIcon" src="sap-icon://form" class="afKpiIcon afIconBlue"/>
+                                <VBox id="qaAppsText">
+                                    <Link id="qaAppsTitle" text="My Applications" press=".onMyApplicationsPress" class="udQuickTitle"/>
+                                    <Text id="qaAppsSub" text="Track application progress" class="afMuted"/>
+                                </VBox>
+                            </HBox>
+                            <core:Icon id="qaAppsArrow" src="sap-icon://navigation-right-arrow" press=".onMyApplicationsPress" class="udQuickArrow"/>
+                        </HBox>
+                        <HBox id="qaAdoptions" alignItems="Center" justifyContent="SpaceBetween" class="afCard udQuick">
+                            <HBox id="qaAdoptionsLeft" alignItems="Center">
+                                <core:Icon id="qaAdoptionsIcon" src="sap-icon://family-care" class="afKpiIcon afIconTeal"/>
+                                <VBox id="qaAdoptionsText">
+                                    <Link id="qaAdoptionsTitle" text="My Adoptions" press=".onMyAdoptionsPress" class="udQuickTitle"/>
+                                    <Text id="qaAdoptionsSub" text="Records, documents, inspections" class="afMuted"/>
+                                </VBox>
+                            </HBox>
+                            <core:Icon id="qaAdoptionsArrow" src="sap-icon://navigation-right-arrow" press=".onMyAdoptionsPress" class="udQuickArrow"/>
+                        </HBox>
+                        <HBox id="qaProfile" alignItems="Center" justifyContent="SpaceBetween" class="afCard udQuick">
+                            <HBox id="qaProfileLeft" alignItems="Center">
+                                <core:Icon id="qaProfileIcon" src="sap-icon://person-placeholder" class="afKpiIcon afIconPurple"/>
+                                <VBox id="qaProfileText">
+                                    <Link id="qaProfileTitle" text="My Profile" press=".onProfilePress" class="udQuickTitle"/>
+                                    <Text id="qaProfileSub" text="Update your details" class="afMuted"/>
+                                </VBox>
+                            </HBox>
+                            <core:Icon id="qaProfileArrow" src="sap-icon://navigation-right-arrow" press=".onProfilePress" class="udQuickArrow"/>
+                        </HBox>
+                    </HBox>
 
-                                <cells>
 
-                                    <Text
-                                        id="applicationAnimalIdText"
-                                        text="{applications>animal_ID}" />
+                    <!-- Available animals + application updates -->
+                    <HBox id="udRow" renderType="Bare" class="afTwoCol">
 
-                                    <Text
-                                        id="applicationDateText"
-                                        text="{applications>applicationDate}" />
+                        <VBox id="cardAnimals" class="afCard">
+                            <HBox id="cardAnimalsHead" justifyContent="SpaceBetween" alignItems="Center" class="afCardHead">
+                                <VBox id="cardAnimalsTitles">
+                                    <Title id="cardAnimalsTitle" text="Newest arrivals" level="H3" class="afCardTitle"/>
+                                    <Text id="cardAnimalsSub" text="Animals available for adoption" class="afMuted"/>
+                                </VBox>
+                                <Link id="cardAnimalsLink" text="View all" press=".onBrowseAnimalsPress" class="afLink"/>
+                            </HBox>
+                            <List id="animalsList" items="{animals>/}" showSeparators="Inner" noDataText="No animals available right now" class="udList">
+                                <CustomListItem id="animalItem" type="Active" press=".onBrowseAnimalsPress">
+                                    <HBox id="animalRow" alignItems="Center" justifyContent="SpaceBetween" class="udListRow">
+                                        <HBox id="animalLeft" alignItems="Center">
+                                            <Image id="animalThumb" src="{path:'animals>species', formatter:'.formatAnimalImage'}"
+                                                   width="44px" height="44px" class="udThumb"/>
+                                            <VBox id="animalNames">
+                                                <Text id="animalName" text="{animals>name}" class="afStrong"/>
+                                                <Text id="animalMeta" text="{animals>breed} · {animals>age} yrs · {animals>shelter/shelterName}" class="afMuted"/>
+                                            </VBox>
+                                        </HBox>
+                                        <ObjectStatus id="animalStatus" inverted="true"
+                                                      text="{path:'animals>animalStatus', formatter:'.formatStatusText'}"
+                                                      state="{path:'animals>animalStatus', formatter:'.formatStatusState'}"/>
+                                    </HBox>
+                                </CustomListItem>
+                            </List>
+                        </VBox>
 
-                                    <ObjectStatus
-                                        id="applicationStatusObjectStatus"
-                                        text="{applications>status}" />
+                        <VBox id="cardUpdates" class="afCard">
+                            <HBox id="cardUpdatesHead" justifyContent="SpaceBetween" alignItems="Center" class="afCardHead">
+                                <VBox id="cardUpdatesTitles">
+                                    <Title id="cardUpdatesTitle" text="Application updates" level="H3" class="afCardTitle"/>
+                                    <Text id="cardUpdatesSub" text="Latest activity on your applications" class="afMuted"/>
+                                </VBox>
+                                <Link id="cardUpdatesLink" text="View all" press=".onMyApplicationsPress" class="afLink"/>
+                            </HBox>
+                            <List id="updatesList" items="{updates>/}" showSeparators="Inner" noDataText="No updates yet. Apply for an animal to get started." class="udList">
+                                <CustomListItem id="updateItem">
+                                    <HBox id="updateRow" alignItems="Center" class="udListRow">
+                                        <core:Icon id="updateIcon" src="{path:'updates>newStatus', formatter:'.formatStatusIcon'}" class="afKpiIcon afIconGreen"/>
+                                        <VBox id="updateText">
+                                            <Text id="updateTitle" class="afStrong"
+                                                  text="{updates>application/animal/name}: {path:'updates>newStatus', formatter:'.formatStatusText'}"/>
+                                            <Text id="updateMeta" text="{updates>remarks} · {path:'updates>changedAt', formatter:'.formatDateTime'}" class="afMuted"/>
+                                        </VBox>
+                                    </HBox>
+                                </CustomListItem>
+                            </List>
+                        </VBox>
+                    </HBox>
 
-                                    <Text
-                                        id="applicationReasonText"
-                                        text="{applications>reasonForAdoption}" />
 
-                                    <Text
-                                        id="applicationHousingText"
-                                        text="{applications>housingDetails}" />
+                    <!-- My applications (kept from the original dashboard) -->
+                    <VBox id="cardMyApps" class="afCard afTableCard">
+                        <HBox id="myAppsHead" justifyContent="SpaceBetween" alignItems="Center" class="afCardHead">
+                            <VBox id="myAppsTitles">
+                                <Title id="myApplicationsTitle" text="My Adoption Applications" level="H3" class="afCardTitle"/>
+                                <Text id="myApplicationsSubtitle" text="Track the status of your adoption requests" class="afMuted"/>
+                            </VBox>
+                            <Button id="myApplicationsRefreshButton" text="Refresh" icon="sap-icon://refresh" press=".onRefresh" type="Transparent"/>
+                        </HBox>
+                        <Table id="myApplicationsTable" items="{applications>/}" noDataText="You have not applied for any animal yet" class="afTable">
+                            <columns>
+                                <Column id="animalColumn"><Text id="animalColumnText" text="Animal"/></Column>
+                                <Column id="applicationDateColumn" minScreenWidth="Tablet" demandPopin="true"><Text id="applicationDateColumnText" text="Application Date"/></Column>
+                                <Column id="applicationStatusColumn"><Text id="applicationStatusColumnText" text="Status"/></Column>
+                                <Column id="applicationRemarksColumn" minScreenWidth="Tablet" demandPopin="true"><Text id="applicationRemarksColumnText" text="Reviewer Comments"/></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem id="myAppItem" type="Navigation" press=".onMyApplicationsPress">
+                                    <VBox id="myAppAnimal">
+                                        <Text id="myAppAnimalName" text="{applications>animal/name}" class="afStrong"/>
+                                        <Text id="myAppAnimalBreed" text="{applications>animal/breed}" class="afMuted"/>
+                                    </VBox>
+                                    <Text id="myAppDate" text="{path:'applications>applicationDate', formatter:'.formatDate'}"/>
+                                    <ObjectStatus id="myAppStatus" inverted="true"
+                                                  text="{path:'applications>status', formatter:'.formatStatusText'}"
+                                                  state="{path:'applications>status', formatter:'.formatStatusState'}"/>
+                                    <Text id="myAppRemarks" text="{applications>staffRemarks}"/>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </VBox>
 
-                                </cells>
 
-                            </ColumnListItem>
+                    <!-- Closing banner -->
+                    <HBox id="udCta" justifyContent="SpaceBetween" alignItems="Center" class="udCta">
+                        <VBox id="udCtaText">
+                            <Text id="udCtaEyebrow" text="READY FOR YOUR NEXT CHAPTER?" class="udHeroEyebrow"/>
+                            <Title id="udCtaTitle" text="Someone special is waiting." level="H2" class="udCtaTitle"/>
+                            <Button id="udCtaButton" text="Browse available animals" press=".onBrowseAnimalsPress" class="afBtnPrimary udCtaButton"/>
+                        </VBox>
+                        <HBox id="udCtaPhotos" class="udCtaPhotos">
+                            <Image id="udCtaCat" src="images/cat.jpg" alt="Cat" class="udCtaPhoto udCtaPhotoLeft"/>
+                            <Image id="udCtaDog" src="images/dog.jpg" alt="Dog" class="udCtaPhoto udCtaPhotoMid"/>
+                            <Image id="udCtaPets" src="images/pets.jpg" alt="Pets" class="udCtaPhoto udCtaPhotoRight"/>
+                        </HBox>
+                    </HBox>
 
-                        </items>
-
-                    </Table>
+                    <Text id="afFooterLeft" text="© 2026 AdoptFlow · Animal Welfare Management System" class="afMuted afFooter"/>
 
                 </VBox>
-
-            </VBox>
+            </HBox>
 
         </content>
-
     </Page>
-
 </mvc:View>

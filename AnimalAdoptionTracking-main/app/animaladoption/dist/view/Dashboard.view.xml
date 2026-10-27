@@ -1,707 +1,417 @@
 <mvc:View
     controllerName="animal.adoption.animaladoption.controller.Dashboard"
     xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
     xmlns="sap.m"
     xmlns:viz="sap.viz.ui5.controls"
     xmlns:viz.data="sap.viz.ui5.data"
-    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
-    xmlns:layout="sap.ui.layout">
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds">
 
-    <Page
-        id="dashboardPage"
-        title="Animal Adoption Dashboard"
-        class="dashboardPage">
-
+    <Page id="dashboardPage" showHeader="false" class="afPage">
         <content>
 
-            <VBox
-                id="mainVBox"
-                class="dashboardContainer">
+            <HBox id="afShell" renderType="Bare" class="afShell">
 
-                <!-- ========================================= -->
-                <!-- HERO SECTION -->
-                <!-- ========================================= -->
+                <!-- ============================================= -->
+                <!-- SIDEBAR                                       -->
+                <!-- ============================================= -->
+                <VBox id="afSidebar" renderType="Bare" class="afSidebar">
 
-                <HBox
-                    id="heroSection"
-                    class="heroSection"
-                    justifyContent="SpaceBetween"
-                    alignItems="Center">
+                    <HBox id="afBrand" alignItems="Center" class="afBrand">
+                        <core:Icon id="afBrandIcon" src="sap-icon://heart" class="afBrandIcon"/>
+                        <VBox id="afBrandText">
+                            <Text id="afBrandName" text="AdoptFlow" class="afBrandName"/>
+                            <Text id="afBrandSub" text="Animal Welfare Suite" class="afBrandSub"/>
+                        </VBox>
+                    </HBox>
 
-                    <VBox
-                        id="heroTextBox"
-                        class="heroTextBox">
+                    <Text id="afNavSection" text="ADMIN WORKSPACE" class="afNavSection"/>
 
-                        <Title
-                            id="heroTitle"
-                            text="Animal Adoption Dashboard"
-                            class="heroTitle"/>
+                    <List id="afNav" showSeparators="None" class="afNav">
+                        <CustomListItem id="navDashboard" type="Active" press=".onRefresh" class="afNavItem afNavActive">
+                            <HBox id="navDashboardBox" alignItems="Center">
+                                <core:Icon id="navDashboardIcon" src="sap-icon://home" class="afNavIcon"/>
+                                <Text id="navDashboardText" text="Dashboard" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navUsers" type="Active" press=".onUsersPress" class="afNavItem">
+                            <HBox id="navUsersBox" alignItems="Center">
+                                <core:Icon id="navUsersIcon" src="sap-icon://group" class="afNavIcon"/>
+                                <Text id="navUsersText" text="Users" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navAnimals" type="Active" press=".onAnimalsPress" class="afNavItem">
+                            <HBox id="navAnimalsBox" alignItems="Center">
+                                <core:Icon id="navAnimalsIcon" src="sap-icon://heart-2" class="afNavIcon"/>
+                                <Text id="navAnimalsText" text="Animals" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navHealth" type="Active" press=".onHealthRecordsPress" class="afNavItem">
+                            <HBox id="navHealthBox" alignItems="Center">
+                                <core:Icon id="navHealthIcon" src="sap-icon://stethoscope" class="afNavIcon"/>
+                                <Text id="navHealthText" text="Health Records" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navShelters" type="Active" press=".onSheltersPress" class="afNavItem">
+                            <HBox id="navSheltersBox" alignItems="Center">
+                                <core:Icon id="navSheltersIcon" src="sap-icon://building" class="afNavIcon"/>
+                                <Text id="navSheltersText" text="Shelters" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navInspections" type="Active" press=".onInspectionsPress" class="afNavItem">
+                            <HBox id="navInspectionsBox" alignItems="Center">
+                                <core:Icon id="navInspectionsIcon" src="sap-icon://inspection" class="afNavIcon"/>
+                                <Text id="navInspectionsText" text="Inspections" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navApplications" type="Active" press=".onApplicationsPress" class="afNavItem">
+                            <HBox id="navApplicationsBox" alignItems="Center">
+                                <core:Icon id="navApplicationsIcon" src="sap-icon://form" class="afNavIcon"/>
+                                <Text id="navApplicationsText" text="Adoption Applications" class="afNavText"/>
+                                <Text id="navApplicationsBadge" text="{dashboard>/pendingApplications}"
+                                      visible="{= ${dashboard>/pendingApplications} > 0 }" class="afNavBadge"/>
+                            </HBox>
+                        </CustomListItem>
+                        <CustomListItem id="navAdoptions" type="Active" press=".onAdoptionsPress" class="afNavItem">
+                            <HBox id="navAdoptionsBox" alignItems="Center">
+                                <core:Icon id="navAdoptionsIcon" src="sap-icon://family-care" class="afNavIcon"/>
+                                <Text id="navAdoptionsText" text="Adoptions" class="afNavText"/>
+                            </HBox>
+                        </CustomListItem>
+                    </List>
+                </VBox>
 
-                        <Text
-                            id="heroSubtitle"
-                            text="Every pet deserves a loving home ❤️"
-                            class="heroSubtitle"/>
 
-                        <Text
-                            id="heroDescription"
-                            text="Manage animals, shelters, applications and adoptions in one place."
-                            class="heroDescription"/>
+                <!-- ============================================= -->
+                <!-- MAIN AREA                                     -->
+                <!-- ============================================= -->
+                <VBox id="afMain" renderType="Bare" class="afMain">
 
+                    <!-- Header: greeting + actions -->
+                    <HBox id="afHeader" justifyContent="SpaceBetween" alignItems="End" wrap="Wrap" class="afHeader">
+                        <VBox id="afHeaderText">
+                            <Text id="afEyebrow" text="OVERVIEW" class="afEyebrow"/>
+                            <Title id="afGreeting" level="H1" class="afGreeting"
+                                   text="{= ${view>/greeting} + (${view>/name} ? ', ' + ${view>/name} : '') }"/>
+                            <Text id="afSubtitle" text="Here's what's happening across your adoption network today." class="afSubtitle"/>
+                        </VBox>
+                        <HBox id="afHeaderActions" class="afHeaderActions">
+                            <Button id="btnRefresh" text="Refresh" icon="sap-icon://refresh" press=".onRefresh" class="afBtnSecondary"/>
+                            <Button id="btnRegisterAnimal" text="Register animal" icon="sap-icon://add" type="Emphasized"
+                                    press=".onAnimalsPress" class="afBtnPrimary"/>
+                        </HBox>
+                    </HBox>
+
+                    <HBox id="afLiveRow" justifyContent="SpaceBetween" alignItems="Center" class="afLiveRow">
+                        <HBox id="afLiveLeft" alignItems="Center">
+                            <core:Icon id="afLiveDot" src="sap-icon://circle-task-2" class="afLiveDot"/>
+                            <Text id="afLiveText" text="Live dashboard" class="afLiveText"/>
+                        </HBox>
+                        <Text id="afLastUpdated" text="Last updated {view>/lastUpdated}" class="afMuted"/>
+                    </HBox>
+
+                    <MessageStrip id="afError" text="{view>/errorText}" type="Error" showIcon="true"
+                                  visible="{= !!${view>/errorText} }" class="sapUiSmallMarginBottom"/>
+
+
+                    <!-- KPI cards (FR-ADM-023) -->
+                    <HBox id="afKpis" renderType="Bare" class="afKpiGrid">
+
+                        <VBox id="kpiAnimals" class="afCard afKpi">
+                            <HBox id="kpiAnimalsHead" alignItems="Center">
+                                <core:Icon id="kpiAnimalsIcon" src="sap-icon://heart-2" class="afKpiIcon afIconGreen"/>
+                                <Text id="kpiAnimalsLabel" text="Total Animals" class="afKpiLabel"/>
+                            </HBox>
+                            <Text id="kpiAnimalsValue" text="{dashboard>/totalAnimals}" class="afKpiValue"/>
+                            <Text id="kpiAnimalsFoot" text="Registered across all shelters" class="afKpiFoot"/>
+                        </VBox>
+
+                        <VBox id="kpiAvailable" class="afCard afKpi">
+                            <HBox id="kpiAvailableHead" alignItems="Center">
+                                <core:Icon id="kpiAvailableIcon" src="sap-icon://accept" class="afKpiIcon afIconTeal"/>
+                                <Text id="kpiAvailableLabel" text="Available Animals" class="afKpiLabel"/>
+                            </HBox>
+                            <Text id="kpiAvailableValue" text="{dashboard>/availableAnimals}" class="afKpiValue"/>
+                            <Text id="kpiAvailableFoot" text="Ready for adoption" class="afKpiFoot afFootGood"/>
+                        </VBox>
+
+                        <VBox id="kpiApplications" class="afCard afKpi">
+                            <HBox id="kpiApplicationsHead" alignItems="Center">
+                                <core:Icon id="kpiApplicationsIcon" src="sap-icon://form" class="afKpiIcon afIconPurple"/>
+                                <Text id="kpiApplicationsLabel" text="Total Applications" class="afKpiLabel"/>
+                            </HBox>
+                            <Text id="kpiApplicationsValue" text="{dashboard>/totalApplications}" class="afKpiValue"/>
+                            <Text id="kpiApplicationsFoot" text="All time" class="afKpiFoot"/>
+                        </VBox>
+
+                        <VBox id="kpiApproved" class="afCard afKpi">
+                            <HBox id="kpiApprovedHead" alignItems="Center">
+                                <core:Icon id="kpiApprovedIcon" src="sap-icon://family-care" class="afKpiIcon afIconGreen"/>
+                                <Text id="kpiApprovedLabel" text="Approved Adoptions" class="afKpiLabel"/>
+                            </HBox>
+                            <Text id="kpiApprovedValue" text="{dashboard>/approvedApplications}" class="afKpiValue"/>
+                            <Text id="kpiApprovedFoot" text="Approved applications" class="afKpiFoot afFootGood"/>
+                        </VBox>
+
+                        <VBox id="kpiPending" class="afCard afKpi">
+                            <HBox id="kpiPendingHead" alignItems="Center">
+                                <core:Icon id="kpiPendingIcon" src="sap-icon://pending" class="afKpiIcon afIconOrange"/>
+                                <Text id="kpiPendingLabel" text="Pending Applications" class="afKpiLabel"/>
+                            </HBox>
+                            <Text id="kpiPendingValue" text="{dashboard>/pendingApplications}" class="afKpiValue"/>
+                            <Text id="kpiPendingFoot" text="Submitted or under review" class="afKpiFoot afFootWarn"/>
+                        </VBox>
+
+                        <VBox id="kpiShelters" class="afCard afKpi">
+                            <HBox id="kpiSheltersHead" alignItems="Center">
+                                <core:Icon id="kpiSheltersIcon" src="sap-icon://building" class="afKpiIcon afIconBlue"/>
+                                <Text id="kpiSheltersLabel" text="Total Shelters" class="afKpiLabel"/>
+                            </HBox>
+                            <Text id="kpiSheltersValue" text="{dashboard>/totalShelters}" class="afKpiValue"/>
+                            <Text id="kpiSheltersFoot" text="In the network" class="afKpiFoot"/>
+                        </VBox>
+                    </HBox>
+
+
+                    <!-- Charts row 1: application status (FR-ADM-024) + categories -->
+                    <HBox id="afChartsRow1" renderType="Bare" class="afTwoCol">
+
+                        <VBox id="cardStatus" class="afCard">
+                            <HBox id="cardStatusHead" justifyContent="SpaceBetween" alignItems="Center" class="afCardHead">
+                                <VBox id="cardStatusTitles">
+                                    <Title id="cardStatusTitle" text="Application Status" level="H3" class="afCardTitle"/>
+                                    <Text id="cardStatusSub" text="All applications" class="afMuted"/>
+                                </VBox>
+                                <Link id="cardStatusLink" text="View all" press=".onApplicationsPress" class="afLink"/>
+                            </HBox>
+                            <HBox id="cardStatusBody" alignItems="Center" class="afDonutRow">
+                                <VBox id="donutWrap" class="afDonutWrap">
+                                    <viz:VizFrame id="statusChart" vizType="donut" width="100%" height="240px" uiConfig="{applicationSet:'fiori'}"
+                                        vizProperties='{"title":{"visible":false},"legend":{"visible":false},"plotArea":{"colorPalette":["#5B8DEF","#F0A32F","#3AA757","#E5484D","#9AA4B2"],"dataLabel":{"visible":false}},"interaction":{"selectability":{"mode":"NONE"}}}'>
+                                        <viz:dataset>
+                                            <viz.data:FlattenedDataset id="statusDataset" data="{chart>/}">
+                                                <viz.data:dimensions>
+                                                    <viz.data:DimensionDefinition id="statusDimension" name="Status" value="{status}"/>
+                                                </viz.data:dimensions>
+                                                <viz.data:measures>
+                                                    <viz.data:MeasureDefinition id="statusMeasure" name="Count" value="{count}"/>
+                                                </viz.data:measures>
+                                            </viz.data:FlattenedDataset>
+                                        </viz:dataset>
+                                        <viz:feeds>
+                                            <viz.feeds:FeedItem id="statusSizeFeed" uid="size" type="Measure" values="Count"/>
+                                            <viz.feeds:FeedItem id="statusColorFeed" uid="color" type="Dimension" values="Status"/>
+                                        </viz:feeds>
+                                    </viz:VizFrame>
+                                    <VBox id="donutCenter" alignItems="Center" class="afDonutCenter">
+                                        <Text id="donutTotal" text="{view>/statusTotal}" class="afDonutTotal"/>
+                                        <Text id="donutTotalLabel" text="Total" class="afMuted"/>
+                                    </VBox>
+                                </VBox>
+                                <List id="statusLegend" items="{chart>/}" showSeparators="None" class="afLegend">
+                                    <CustomListItem id="statusLegendItem">
+                                        <HBox id="statusLegendRow" alignItems="Center" justifyContent="SpaceBetween" class="afLegendRow">
+                                            <HBox id="statusLegendLeft" alignItems="Center">
+                                                <core:Icon id="statusLegendDot" src="sap-icon://color-fill"
+                                                           color="{path:'chart>status', formatter:'.formatLegendColor'}" class="afLegendDot"/>
+                                                <Text id="statusLegendName" text="{chart>status}"/>
+                                            </HBox>
+                                            <Text id="statusLegendCount" text="{chart>count}" class="afLegendCount"/>
+                                        </HBox>
+                                    </CustomListItem>
+                                </List>
+                            </HBox>
+                        </VBox>
+
+                        <VBox id="cardCategory" class="afCard">
+                            <HBox id="cardCategoryHead" justifyContent="SpaceBetween" alignItems="Center" class="afCardHead">
+                                <VBox id="cardCategoryTitles">
+                                    <Title id="cardCategoryTitle" text="Animal Categories" level="H3" class="afCardTitle"/>
+                                    <Text id="cardCategorySub" text="Current registered population" class="afMuted"/>
+                                </VBox>
+                                <Link id="cardCategoryLink" text="View animals" press=".onAnimalsPress" class="afLink"/>
+                            </HBox>
+                            <viz:VizFrame id="categoryChart" vizType="column" width="100%" height="260px" uiConfig="{applicationSet:'fiori'}"
+                                vizProperties='{"title":{"visible":false},"legend":{"visible":false},"plotArea":{"colorPalette":["#3AA757"],"dataLabel":{"visible":true},"gridline":{"visible":false}},"valueAxis":{"visible":false},"categoryAxis":{"title":{"visible":false}},"interaction":{"selectability":{"mode":"NONE"}}}'>
+                                <viz:dataset>
+                                    <viz.data:FlattenedDataset id="categoryDataset" data="{category>/}">
+                                        <viz.data:dimensions>
+                                            <viz.data:DimensionDefinition id="categoryDimension" name="Species" value="{species}"/>
+                                        </viz.data:dimensions>
+                                        <viz.data:measures>
+                                            <viz.data:MeasureDefinition id="categoryMeasure" name="Animals" value="{count}"/>
+                                        </viz.data:measures>
+                                    </viz.data:FlattenedDataset>
+                                </viz:dataset>
+                                <viz:feeds>
+                                    <viz.feeds:FeedItem id="categoryValueFeed" uid="valueAxis" type="Measure" values="Animals"/>
+                                    <viz.feeds:FeedItem id="categoryCategoryFeed" uid="categoryAxis" type="Dimension" values="Species"/>
+                                </viz:feeds>
+                            </viz:VizFrame>
+                        </VBox>
+                    </HBox>
+
+
+                    <!-- Charts row 2: adoption trend (FR-ADM-025) + shelter capacity (FR-ADM-026) -->
+                    <HBox id="afChartsRow2" renderType="Bare" class="afTwoCol afTwoColWide">
+
+                        <VBox id="cardTrend" class="afCard">
+                            <HBox id="cardTrendHead" justifyContent="SpaceBetween" alignItems="Center" class="afCardHead">
+                                <VBox id="cardTrendTitles">
+                                    <Title id="cardTrendTitle" text="Monthly Adoption Trend" level="H3" class="afCardTitle"/>
+                                    <Text id="cardTrendSub" text="Completed adoptions over time" class="afMuted"/>
+                                </VBox>
+                            </HBox>
+                            <viz:VizFrame id="trendChart" vizType="line" width="100%" height="260px" uiConfig="{applicationSet:'fiori'}"
+                                vizProperties='{"title":{"visible":false},"legend":{"visible":false},"plotArea":{"colorPalette":["#3AA757"],"marker":{"visible":true,"size":7},"line":{"width":3},"gridline":{"visible":true}},"categoryAxis":{"title":{"visible":false}},"valueAxis":{"title":{"visible":false}},"interaction":{"selectability":{"mode":"NONE"}}}'>
+                                <viz:dataset>
+                                    <viz.data:FlattenedDataset id="trendDataset" data="{trend>/}">
+                                        <viz.data:dimensions>
+                                            <viz.data:DimensionDefinition id="trendDimension" name="Month" value="{month}"/>
+                                        </viz.data:dimensions>
+                                        <viz.data:measures>
+                                            <viz.data:MeasureDefinition id="trendMeasure" name="Adoptions" value="{count}"/>
+                                        </viz.data:measures>
+                                    </viz.data:FlattenedDataset>
+                                </viz:dataset>
+                                <viz:feeds>
+                                    <viz.feeds:FeedItem id="trendValueFeed" uid="valueAxis" type="Measure" values="Adoptions"/>
+                                    <viz.feeds:FeedItem id="trendCategoryFeed" uid="categoryAxis" type="Dimension" values="Month"/>
+                                </viz:feeds>
+                            </viz:VizFrame>
+                        </VBox>
+
+                        <VBox id="cardShelter" class="afCard">
+                            <HBox id="cardShelterHead" justifyContent="SpaceBetween" alignItems="Center" class="afCardHead">
+                                <VBox id="cardShelterTitles">
+                                    <Title id="cardShelterTitle" text="Shelter Capacity" level="H3" class="afCardTitle"/>
+                                    <Text id="cardShelterSub" text="Occupancy by shelter" class="afMuted"/>
+                                </VBox>
+                                <Link id="cardShelterLink" text="View all" press=".onSheltersPress" class="afLink"/>
+                            </HBox>
+                            <List id="shelterList" items="{shelter>/}" showSeparators="None" class="afShelterList">
+                                <CustomListItem id="shelterItem">
+                                    <VBox id="shelterRow" class="afShelterRow">
+                                        <HBox id="shelterRowTop" justifyContent="SpaceBetween" alignItems="Center">
+                                            <VBox id="shelterRowNames">
+                                                <Text id="shelterName" text="{shelter>shelterName}" class="afStrong"/>
+                                                <Text id="shelterMeta" text="{shelter>city} · {shelter>currentOccupancy} / {shelter>capacity}" class="afMuted"/>
+                                            </VBox>
+                                            <Text id="shelterPct" text="{path:'shelter>occupancyPercentage', formatter:'.formatPercent'}" class="afStrong"/>
+                                        </HBox>
+                                        <ProgressIndicator id="shelterBar" percentValue="{shelter>occupancyPercentage}" showValue="false"
+                                                           state="{path:'shelter>occupancyPercentage', formatter:'.formatOccupancyState'}"
+                                                           height="8px" class="afProgress"/>
+                                    </VBox>
+                                </CustomListItem>
+                            </List>
+                        </VBox>
+                    </HBox>
+
+
+                    <!-- Recent activity -->
+                    <VBox id="afRecentHead" class="afSectionHead">
+                        <Title id="afRecentTitle" text="Recent activities" level="H2" class="afSectionTitle"/>
+                        <Text id="afRecentSub" text="Latest updates across the adoption network" class="afMuted"/>
                     </VBox>
 
-                    <Image
-                        id="heroDogImage"
-                        src="images/dog.jpg"
-                        alt="Dog"
-                        class="heroImage"/>
-
-                    <Image
-                        id="heroCatImage"
-                        src="images/cat.jpg"
-                        alt="Cat"
-                        class="heroImageSmall"/>
-
-                </HBox>
-
-
-                <!-- ========================================= -->
-                <!-- DASHBOARD OVERVIEW -->
-                <!-- ========================================= -->
-
-                <Title
-                    id="dashboardOverviewTitle"
-                    text="Dashboard Overview"
-                    class="sectionTitle"/>
-
-
-                <!-- KPI TILES -->
-
-                <HBox
-                    id="kpiHBox"
-                    wrap="Wrap"
-                    justifyContent="SpaceBetween"
-                    class="kpiContainer">
-
-                    <!-- Total Animals -->
-
-                    <GenericTile
-                        id="tileAnimals"
-                        header="Total Animals"
-                        class="kpiTile kpiBlue">
-
-                        <TileContent id="tileContentAnimals">
-
-                            <NumericContent
-                                id="numAnimals"
-                                value="{dashboard>/totalAnimals}"
-                                valueColor="Good"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Available Animals -->
-
-                    <GenericTile
-                        id="tileAvailableAnimals"
-                        header="Available Animals"
-                        class="kpiTile kpiGreen">
-
-                        <TileContent
-                            id="tileContentAvailableAnimals">
-
-                            <NumericContent
-                                id="numAvailableAnimals"
-                                value="{dashboard>/availableAnimals}"
-                                valueColor="Good"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Applications -->
-
-                    <GenericTile
-                        id="tileApplications"
-                        header="Applications"
-                        class="kpiTile kpiPurple">
-
-                        <TileContent
-                            id="tileContentApplications">
-
-                            <NumericContent
-                                id="numApplications"
-                                value="{dashboard>/totalApplications}"
-                                valueColor="Neutral"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Approved -->
-
-                    <GenericTile
-                        id="tileApproved"
-                        header="Approved"
-                        class="kpiTile kpiGreen">
-
-                        <TileContent
-                            id="tileContentApproved">
-
-                            <NumericContent
-                                id="numApproved"
-                                value="{dashboard>/approvedApplications}"
-                                valueColor="Good"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Pending -->
-
-                    <GenericTile
-                        id="tilePending"
-                        header="Pending"
-                        class="kpiTile kpiOrange">
-
-                        <TileContent
-                            id="tileContentPending">
-
-                            <NumericContent
-                                id="numPending"
-                                value="{dashboard>/pendingApplications}"
-                                valueColor="Critical"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Shelters -->
-
-                    <GenericTile
-                        id="tileShelters"
-                        header="Shelters"
-                        class="kpiTile kpiBlue">
-
-                        <TileContent
-                            id="tileContentShelters">
-
-                            <NumericContent
-                                id="numShelters"
-                                value="{dashboard>/totalShelters}"
-                                valueColor="Neutral"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-                </HBox>
-
-
-                <!-- ========================================= -->
-                <!-- MANAGE RECORDS -->
-                <!-- ========================================= -->
-
-                <Title
-                    id="manageRecordsTitle"
-                    text="Manage Records"
-                    class="sectionTitle"/>
-
-
-                <HBox
-                    id="navigationHBox"
-                    wrap="Wrap"
-                    justifyContent="SpaceBetween"
-                    class="navigationContainer">
-
-
-                    <!-- Users -->
-
-                    <GenericTile
-                        id="usersTile"
-                        header="Users"
-                        subheader="Manage Users"
-                        press=".onUsersPress"
-                        class="navigationTile usersTile">
-
-                        <TileContent id="usersTileContent">
-
-                            <ImageContent
-                                id="usersImage"
-                                src="sap-icon://employee"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Shelters -->
-
-                    <GenericTile
-                        id="sheltersTile"
-                        header="Shelters"
-                        subheader="Manage Shelters"
-                        press=".onSheltersPress"
-                        class="navigationTile shelterTile">
-
-                        <TileContent id="sheltersTileContent">
-
-                            <ImageContent
-                                id="sheltersImage"
-                                src="sap-icon://home"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Animals -->
-
-                    <GenericTile
-                        id="animalsTile"
-                        header="Animals"
-                        subheader="Manage Animals"
-                        press=".onAnimalsPress"
-                        class="navigationTile animalTile">
-
-                        <TileContent id="animalsTileContent">
-
-                            <ImageContent
-                                id="animalsImage"
-                                src="sap-icon://pet-care"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Applications -->
-
-                    <GenericTile
-                        id="applicationsTile"
-                        header="Applications"
-                        subheader="Manage Applications"
-                        press=".onApplicationsPress"
-                        class="navigationTile applicationTile">
-
-                        <TileContent id="applicationsTileContent">
-
-                            <ImageContent
-                                id="applicationsImage"
-                                src="sap-icon://document"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Adoptions -->
-
-                    <GenericTile
-                        id="adoptionsTile"
-                        header="Adoptions"
-                        subheader="Manage Adoptions"
-                        press=".onAdoptionsPress"
-                        class="navigationTile adoptionTile">
-
-                        <TileContent id="adoptionsTileContent">
-
-                            <ImageContent
-                                id="adoptionsImage"
-                                src="sap-icon://accept"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Health -->
-
-                    <GenericTile
-                        id="healthRecordsTile"
-                        header="Health Records"
-                        subheader="Manage Health"
-                        press=".onHealthRecordsPress"
-                        class="navigationTile healthTile">
-
-                        <TileContent id="healthRecordsTileContent">
-
-                            <ImageContent
-                                id="healthRecordsImage"
-                                src="sap-icon://clinical-order"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-
-                    <!-- Inspections -->
-
-                    <GenericTile
-                        id="inspectionsTile"
-                        header="Inspections"
-                        subheader="Manage Inspections"
-                        press=".onInspectionsPress"
-                        class="navigationTile inspectionTile">
-
-                        <TileContent id="inspectionsTileContent">
-
-                            <ImageContent
-                                id="inspectionsImage"
-                                src="sap-icon://inspection"/>
-
-                        </TileContent>
-
-                    </GenericTile>
-
-                </HBox>
-
-
-                <!-- ================================================= -->
-                <!-- CHARTS                                            -->
-                <!-- 2 CHARTS PER ROW                                  -->
-                <!-- ================================================= -->
-
-                <Title
-                    id="analyticsTitle"
-                    text="Adoption Analytics"
-                    level="H2"
-                    class="sapUiLargeMarginTop sapUiMediumMarginBottom" />
-
-
-                <!-- ================================================= -->
-                <!-- ROW 1                                             -->
-                <!-- ADOPTION STATUS + ANIMAL CATEGORIES              -->
-                <!-- ================================================= -->
-
-                <HBox
-                    id="chartRow1"
-                    width="100%"
-                    justifyContent="SpaceBetween"
-                    alignItems="Start"
-                    wrap="Wrap"
-                    class="chartRow">
-
-
-                    <!-- ============================= -->
-                    <!-- ADOPTION STATUS               -->
-                    <!-- ============================= -->
-
-                    <VBox
-                        id="statusChartContainer"
-                        width="49%"
-                        class="chartCard">
-
-                        <Title
-                            id="statusChartTitle"
-                            text="Adoption Status"
-                            level="H3"
-                            class="chartTitle" />
-
-                        <viz:VizFrame
-                            id="statusChart"
-                            vizType="donut"
-                            width="100%"
-                            height="350px"
-                            vizProperties='{"title":{"visible":false}}'>
-
-                            <viz:dataset>
-
-                                <viz.data:FlattenedDataset
-                                    id="statusDataset"
-                                    data="{chart>/}">
-
-                                    <viz.data:dimensions>
-
-                                        <viz.data:DimensionDefinition
-                                            id="statusDimension"
-                                            name="Status"
-                                            value="{status}" />
-
-                                    </viz.data:dimensions>
-
-                                    <viz.data:measures>
-
-                                        <viz.data:MeasureDefinition
-                                            id="statusMeasure"
-                                            name="Count"
-                                            value="{count}" />
-
-                                    </viz.data:measures>
-
-                                </viz.data:FlattenedDataset>
-
-                            </viz:dataset>
-
-
-                            <viz:feeds>
-
-                                <viz.feeds:FeedItem
-                                    id="statusSizeFeed"
-                                    uid="size"
-                                    type="Measure"
-                                    values="Count" />
-
-                                <viz.feeds:FeedItem
-                                    id="statusColorFeed"
-                                    uid="color"
-                                    type="Dimension"
-                                    values="Status" />
-
-                            </viz:feeds>
-
-                        </viz:VizFrame>
-
+                    <VBox id="cardRecentApps" class="afCard afTableCard">
+                        <HBox id="recentAppsHead" justifyContent="SpaceBetween" alignItems="Center" class="afCardHead">
+                            <VBox id="recentAppsTitles">
+                                <Title id="recentAppsTitle" text="Recent Adoption Applications" level="H3" class="afCardTitle"/>
+                                <Text id="recentAppsSub" text="Latest applications received" class="afMuted"/>
+                            </VBox>
+                            <Link id="recentAppsLink" text="View all" press=".onApplicationsPress" class="afLink"/>
+                        </HBox>
+                        <Table id="recentAppsTable" items="{recentApplications>/}" noDataText="No applications yet" class="afTable">
+                            <columns>
+                                <Column id="raColId"><Text id="raHId" text="Application"/></Column>
+                                <Column id="raColApplicant"><Text id="raHApplicant" text="Applicant"/></Column>
+                                <Column id="raColAnimal" minScreenWidth="Tablet" demandPopin="true"><Text id="raHAnimal" text="Animal"/></Column>
+                                <Column id="raColDate" minScreenWidth="Tablet" demandPopin="true"><Text id="raHDate" text="Submitted"/></Column>
+                                <Column id="raColStatus"><Text id="raHStatus" text="Status"/></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem id="raItem" type="Navigation" press=".onApplicationsPress">
+                                    <Text id="raId" text="{path:'recentApplications>ID', formatter:'.formatShortId'}" class="afIdText"/>
+                                    <Text id="raApplicant" text="{recentApplications>applicant/firstName} {recentApplications>applicant/lastName}"/>
+                                    <Text id="raAnimal" text="{recentApplications>animal/name}"/>
+                                    <Text id="raDate" text="{path:'recentApplications>applicationDate', formatter:'.formatDate'}"/>
+                                    <ObjectStatus id="raStatus" inverted="true"
+                                                  text="{path:'recentApplications>status', formatter:'.formatStatusText'}"
+                                                  state="{path:'recentApplications>status', formatter:'.formatStatusState'}"/>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
                     </VBox>
 
-
-                    <!-- ============================= -->
-                    <!-- ANIMAL CATEGORIES             -->
-                    <!-- ============================= -->
-
-                    <VBox
-                        id="categoryChartContainer"
-                        width="49%"
-                        class="chartCard">
-
-                        <Title
-                            id="categoryChartTitle"
-                            text="Animal Categories"
-                            level="H3"
-                            class="chartTitle" />
-
-                        <viz:VizFrame
-                            id="categoryChart"
-                            vizType="column"
-                            width="100%"
-                            height="350px"
-                            vizProperties='{"title":{"visible":false}}'>
-
-                            <viz:dataset>
-
-                                <viz.data:FlattenedDataset
-                                    id="categoryDataset"
-                                    data="{category>/}">
-
-                                    <viz.data:dimensions>
-
-                                        <viz.data:DimensionDefinition
-                                            id="categoryDimension"
-                                            name="Species"
-                                            value="{species}" />
-
-                                    </viz.data:dimensions>
-
-                                    <viz.data:measures>
-
-                                        <viz.data:MeasureDefinition
-                                            id="categoryMeasure"
-                                            name="Animals"
-                                            value="{count}" />
-
-                                    </viz.data:measures>
-
-                                </viz.data:FlattenedDataset>
-
-                            </viz:dataset>
-
-
-                            <viz:feeds>
-
-                                <viz.feeds:FeedItem
-                                    id="categoryValueFeed"
-                                    uid="valueAxis"
-                                    type="Measure"
-                                    values="Animals" />
-
-                                <viz.feeds:FeedItem
-                                    id="categoryCategoryFeed"
-                                    uid="categoryAxis"
-                                    type="Dimension"
-                                    values="Species" />
-
-                            </viz:feeds>
-
-                        </viz:VizFrame>
-
+                    <VBox id="cardRecentAnimals" class="afCard afTableCard">
+                        <HBox id="recentAnimalsHead" justifyContent="SpaceBetween" alignItems="Center" class="afCardHead">
+                            <VBox id="recentAnimalsTitles">
+                                <Title id="recentAnimalsTitle" text="Recent Animal Registrations" level="H3" class="afCardTitle"/>
+                                <Text id="recentAnimalsSub" text="New animals across shelters" class="afMuted"/>
+                            </VBox>
+                            <Link id="recentAnimalsLink" text="View all" press=".onAnimalsPress" class="afLink"/>
+                        </HBox>
+                        <Table id="recentAnimalsTable" items="{recentAnimals>/}" noDataText="No animals yet" class="afTable">
+                            <columns>
+                                <Column id="rnColName"><Text id="rnHName" text="Animal"/></Column>
+                                <Column id="rnColCategory"><Text id="rnHCategory" text="Category"/></Column>
+                                <Column id="rnColShelter" minScreenWidth="Tablet" demandPopin="true"><Text id="rnHShelter" text="Shelter"/></Column>
+                                <Column id="rnColDate" minScreenWidth="Tablet" demandPopin="true"><Text id="rnHDate" text="Arrived"/></Column>
+                                <Column id="rnColStatus"><Text id="rnHStatus" text="Status"/></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem id="rnItem" type="Navigation" press=".onAnimalsPress">
+                                    <Text id="rnName" text="{recentAnimals>name}" class="afStrong"/>
+                                    <Text id="rnCategory" text="{recentAnimals>species} - {recentAnimals>breed}"/>
+                                    <Text id="rnShelter" text="{recentAnimals>shelter/shelterName}"/>
+                                    <Text id="rnDate" text="{path:'recentAnimals>arrivalDate', formatter:'.formatDate'}"/>
+                                    <ObjectStatus id="rnStatus" inverted="true"
+                                                  text="{path:'recentAnimals>animalStatus', formatter:'.formatStatusText'}"
+                                                  state="{path:'recentAnimals>animalStatus', formatter:'.formatStatusState'}"/>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
                     </VBox>
 
-                </HBox>
-
-
-                <!-- ================================================= -->
-                <!-- ROW 2                                             -->
-                <!-- MONTHLY TREND + SHELTER CAPACITY                 -->
-                <!-- ================================================= -->
-
-                <HBox
-                    id="chartRow2"
-                    width="100%"
-                    justifyContent="SpaceBetween"
-                    alignItems="Start"
-                    wrap="Wrap"
-                    class="chartRow sapUiMediumMarginTop">
-
-
-                    <!-- ============================= -->
-                    <!-- MONTHLY ADOPTION TREND        -->
-                    <!-- ============================= -->
-
-                    <VBox
-                        id="trendChartContainer"
-                        width="49%"
-                        class="chartCard">
-
-                        <Title
-                            id="trendChartTitle"
-                            text="Monthly Adoption Trend"
-                            level="H3"
-                            class="chartTitle" />
-
-                        <viz:VizFrame
-                            id="trendChart"
-                            vizType="line"
-                            width="100%"
-                            height="350px"
-                            vizProperties='{"title":{"visible":false}}'>
-
-                            <viz:dataset>
-
-                                <viz.data:FlattenedDataset
-                                    id="trendDataset"
-                                    data="{trend>/}">
-
-                                    <viz.data:dimensions>
-
-                                        <viz.data:DimensionDefinition
-                                            id="trendDimension"
-                                            name="Month"
-                                            value="{month}" />
-
-                                    </viz.data:dimensions>
-
-                                    <viz.data:measures>
-
-                                        <viz.data:MeasureDefinition
-                                            id="trendMeasure"
-                                            name="Adoptions"
-                                            value="{count}" />
-
-                                    </viz.data:measures>
-
-                                </viz.data:FlattenedDataset>
-
-                            </viz:dataset>
-
-
-                            <viz:feeds>
-
-                                <viz.feeds:FeedItem
-                                    id="trendValueFeed"
-                                    uid="valueAxis"
-                                    type="Measure"
-                                    values="Adoptions" />
-
-                                <viz.feeds:FeedItem
-                                    id="trendCategoryFeed"
-                                    uid="categoryAxis"
-                                    type="Dimension"
-                                    values="Month" />
-
-                            </viz:feeds>
-
-                        </viz:VizFrame>
-
+                    <VBox id="cardRecentAdoptions" class="afCard afTableCard">
+                        <HBox id="recentAdoptionsHead" justifyContent="SpaceBetween" alignItems="Center" class="afCardHead">
+                            <VBox id="recentAdoptionsTitles">
+                                <Title id="recentAdoptionsTitle" text="Recent Approved Adoptions" level="H3" class="afCardTitle"/>
+                                <Text id="recentAdoptionsSub" text="Recently completed placements" class="afMuted"/>
+                            </VBox>
+                            <Link id="recentAdoptionsLink" text="View all" press=".onAdoptionsPress" class="afLink"/>
+                        </HBox>
+                        <Table id="recentAdoptionsTable" items="{recentAdoptions>/}" noDataText="No adoptions yet" class="afTable">
+                            <columns>
+                                <Column id="rdColAnimal"><Text id="rdHAnimal" text="Animal"/></Column>
+                                <Column id="rdColAdopter"><Text id="rdHAdopter" text="Adopter"/></Column>
+                                <Column id="rdColShelter" minScreenWidth="Tablet" demandPopin="true"><Text id="rdHShelter" text="Shelter"/></Column>
+                                <Column id="rdColDate" minScreenWidth="Tablet" demandPopin="true"><Text id="rdHDate" text="Adoption Date"/></Column>
+                                <Column id="rdColStatus"><Text id="rdHStatus" text="Status"/></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem id="rdItem" type="Navigation" press=".onAdoptionsPress">
+                                    <Text id="rdAnimal" text="{recentAdoptions>animal/name}" class="afStrong"/>
+                                    <Text id="rdAdopter" text="{recentAdoptions>application/applicant/firstName} {recentAdoptions>application/applicant/lastName}"/>
+                                    <Text id="rdShelter" text="{recentAdoptions>animal/shelter/shelterName}"/>
+                                    <Text id="rdDate" text="{path:'recentAdoptions>adoptionDate', formatter:'.formatDate'}"/>
+                                    <ObjectStatus id="rdStatus" inverted="true"
+                                                  text="{path:'recentAdoptions>status', formatter:'.formatStatusText'}"
+                                                  state="{path:'recentAdoptions>status', formatter:'.formatStatusState'}"/>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
                     </VBox>
 
+                    <HBox id="afFooter" justifyContent="SpaceBetween" class="afFooter">
+                        <Text id="afFooterLeft" text="© 2026 AdoptFlow · Animal Welfare Management System" class="afMuted"/>
+                    </HBox>
 
-                    <!-- ============================= -->
-                    <!-- SHELTER CAPACITY              -->
-                    <!-- ============================= -->
-
-                    <VBox
-                        id="shelterChartContainer"
-                        width="49%"
-                        class="chartCard">
-
-                        <Title
-                            id="shelterChartTitle"
-                            text="Shelter Capacity"
-                            level="H3"
-                            class="chartTitle" />
-
-                        <viz:VizFrame
-                            id="shelterChart"
-                            vizType="column"
-                            width="100%"
-                            height="350px"
-                            vizProperties='{"title":{"visible":false}}'>
-
-                            <viz:dataset>
-
-                                <viz.data:FlattenedDataset
-                                    id="shelterDataset"
-                                    data="{shelter>/}">
-
-                                    <viz.data:dimensions>
-
-                                        <viz.data:DimensionDefinition
-                                            id="shelterNameDimension"
-                                            name="Shelter"
-                                            value="{shelterName}" />
-
-                                    </viz.data:dimensions>
-
-                                    <viz.data:measures>
-
-                                        <viz.data:MeasureDefinition
-                                            id="shelterCapacityMeasure"
-                                            name="Capacity"
-                                            value="{capacity}" />
-
-                                        <viz.data:MeasureDefinition
-                                            id="shelterOccupancyMeasure"
-                                            name="Current Occupancy"
-                                            value="{currentOccupancy}" />
-
-                                    </viz.data:measures>
-
-                                </viz.data:FlattenedDataset>
-
-                            </viz:dataset>
-
-
-                            <viz:feeds>
-
-                                <viz.feeds:FeedItem
-                                    id="shelterValueFeed"
-                                    uid="valueAxis"
-                                    type="Measure"
-                                    values="Capacity,Current Occupancy" />
-
-                                <viz.feeds:FeedItem
-                                    id="shelterCategoryFeed"
-                                    uid="categoryAxis"
-                                    type="Dimension"
-                                    values="Shelter" />
-
-                            </viz:feeds>
-
-                        </viz:VizFrame>
-
-                    </VBox>
-
-                </HBox>
-
-            </VBox>
+                </VBox>
+            </HBox>
 
         </content>
-
     </Page>
-
 </mvc:View>

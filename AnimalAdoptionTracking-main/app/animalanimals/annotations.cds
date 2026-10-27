@@ -8,47 +8,62 @@ annotate service.AnimalsSrv with @(
     UI.SelectionFields : [
         name,
         species,
-        animalStatus
+        animalStatus,
+        ID,
+        shelter_ID
     ],
 
     UI.LineItem : [
     {
         $Type : 'UI.DataField',
         Value : name,
-        Label : 'Name'
-    },
+        Label : 'Name',
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
     {
         $Type : 'UI.DataField',
         Value : species,
-        Label : 'Species'
-    },
+        Label : 'Species',
+            ![@HTML5.CssDefaults] : { width : '7rem' }
+        },
     {
         $Type : 'UI.DataField',
         Value : breed,
-        Label : 'Breed'
-    },
+        Label : 'Breed',
+            ![@HTML5.CssDefaults] : { width : '10rem' }
+        },
     {
         $Type : 'UI.DataField',
         Value : age,
-        Label : 'Age'
-    },
+        Label : 'Age',
+            ![@HTML5.CssDefaults] : { width : '6rem' }
+        },
     {
         $Type : 'UI.DataField',
         Value : animalStatus,
-        Label : 'Status'
-    },
+        Label : 'Status',
+            ![@HTML5.CssDefaults] : { width : '8rem' }
+        },
     {
-        $Type : 'UI.DataFieldForAction',
-        Action : 'CatalogService.editAnimal',
-        Label : 'Edit Animal'
-    },
+        $Type : 'UI.DataField',
+        Value : shelter_ID,
+        Label : 'Shelter',
+            ![@HTML5.CssDefaults] : { width : '10rem' }
+        },
     {
-        $Type : 'UI.DataFieldForAction',
-        Action : 'CatalogService.EntityContainer/createAnimal',
-        Label : 'Create Animal'
-    }
-
-],
+        $Type : 'UI.DataField',
+        Value : adoptionEligibility,
+        Label : 'Adoption Eligibility',
+        Criticality : eligibilityCriticality,
+            ![@HTML5.CssDefaults] : { width : '15rem' }
+        },
+    {
+        $Type : 'UI.DataField',
+        Value : ID,
+        Label : 'ID',
+            ![@HTML5.CssDefaults] : { width : '10rem' }
+        }
+    ],
     
 );
 annotate service.AnimalsSrv with @(
@@ -57,67 +72,67 @@ annotate service.AnimalsSrv with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Label : 'createdAt',
+                Label : 'Created At',
                 Value : createdAt,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'modifiedAt',
+                Label : 'Last Changed At',
                 Value : modifiedAt,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'name',
+                Label : 'Name',
                 Value : name,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'species',
+                Label : 'Species',
                 Value : species,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'breed',
+                Label : 'Breed',
                 Value : breed,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'gender',
+                Label : 'Gender',
                 Value : gender,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'age',
+                Label : 'Age (years)',
                 Value : age,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'arrivalDate',
+                Label : 'Arrival Date',
                 Value : arrivalDate,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'animalStatus',
+                Label : 'Adoption Status',
                 Value : animalStatus,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'vaccinationStatus',
+                Label : 'Vaccination Status',
                 Value : vaccinationStatus,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'spayedOrNeutered',
+                Label : 'Spayed / Neutered',
                 Value : spayedOrNeutered,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'photo',
+                Label : 'Photo',
                 Value : photo,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'description',
+                Label : 'Description',
                 Value : description,
             },
         ],
@@ -129,6 +144,18 @@ annotate service.AnimalsSrv with @(
             Label : 'General Information',
             Target : '@UI.FieldGroup#GeneratedGroup',
         },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID : 'HealthSummaryFacet',
+            Label : 'Health & Eligibility',
+            Target : '@UI.FieldGroup#HealthSummary',
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID : 'HealthRecordsFacet',
+            Label : 'Health Records',
+            Target : 'healthRecords/@UI.LineItem',
+        }
     ],
     
 
@@ -148,14 +175,6 @@ annotate service.AnimalsSrv with {
             },
             {
                 $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'createdAt',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'modifiedAt',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
                 ValueListProperty : 'shelterName',
             },
             {
@@ -165,3 +184,16 @@ annotate service.AnimalsSrv with {
         ],
     }
 };
+
+// FR-ADM-016: adoption eligibility derived from status, health and vaccination
+annotate service.AnimalsSrv with @(
+    UI.FieldGroup #HealthSummary : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            { $Type : 'UI.DataField', Value : adoptionEligibility, Label : 'Adoption Eligibility', Criticality : eligibilityCriticality },
+            { $Type : 'UI.DataField', Value : animalStatus,        Label : 'Adoption Status' },
+            { $Type : 'UI.DataField', Value : vaccinationStatus,   Label : 'Vaccination Status' },
+            { $Type : 'UI.DataField', Value : spayedOrNeutered,    Label : 'Spayed / Neutered' }
+        ]
+    }
+);

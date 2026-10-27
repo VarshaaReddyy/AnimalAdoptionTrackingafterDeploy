@@ -5,27 +5,27 @@ annotate service.AdoptionsSrv with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Label : 'createdAt',
+                Label : 'Created At',
                 Value : createdAt,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'modifiedAt',
+                Label : 'Last Changed At',
                 Value : modifiedAt,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'adoptionDate',
+                Label : 'Adoption Date',
                 Value : adoptionDate,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'status',
+                Label : 'Status',
                 Value : status,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'remarks',
+                Label : 'Remarks',
                 Value : remarks,
             },
         ],
@@ -66,14 +66,6 @@ annotate service.AdoptionsSrv with {
             },
             {
                 $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'createdAt',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'modifiedAt',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
                 ValueListProperty : 'applicationDate',
             },
             {
@@ -96,14 +88,6 @@ annotate service.AdoptionsSrv with {
             },
             {
                 $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'createdAt',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'modifiedAt',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
                 ValueListProperty : 'name',
             },
             {
@@ -123,14 +107,6 @@ annotate service.AdoptionsSrv with {
                 $Type : 'Common.ValueListParameterInOut',
                 LocalDataProperty : completedBy_ID,
                 ValueListProperty : 'ID',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'createdAt',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'modifiedAt',
             },
             {
                 $Type : 'Common.ValueListParameterDisplayOnly',

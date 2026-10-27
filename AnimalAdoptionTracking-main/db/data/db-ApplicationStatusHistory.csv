@@ -1,0 +1,33 @@
+ID;application_ID;oldStatus;newStatus;changedBy;changedAt;remarks
+e731eb93-1c35-5f78-a93c-17751fc3ecb9;6181792e-e7ba-5533-9add-3aa9911b0c36;;SUBMITTED;sarah.johnson@example.com;2026-04-02T10:00:00Z;Application submitted
+0bb575c8-6a69-5902-a9cc-415a9079aaa7;6181792e-e7ba-5533-9add-3aa9911b0c36;SUBMITTED;UNDER_REVIEW;darshan.kumar@example.com;2026-04-03T11:00:00Z;Review started
+5f5e92c2-8af2-52df-8577-2c830b4ca93a;6181792e-e7ba-5533-9add-3aa9911b0c36;UNDER_REVIEW;APPROVED;darshan.kumar@example.com;2026-04-07T12:00:00Z;Home visit satisfactory.
+dbb8e33e-f333-581e-9485-47950aef73bb;c17a5c67-94cc-5f6c-a5e6-a4d2472b398a;;SUBMITTED;sarah.johnson@example.com;2026-02-10T10:00:00Z;Application submitted
+76a03f6c-0984-5248-b653-3576434ab658;c17a5c67-94cc-5f6c-a5e6-a4d2472b398a;SUBMITTED;UNDER_REVIEW;darshan.kumar@example.com;2026-02-11T11:00:00Z;Review started
+b5abf749-c8e7-5770-b41e-f22ec675858e;c17a5c67-94cc-5f6c-a5e6-a4d2472b398a;UNDER_REVIEW;APPROVED;darshan.kumar@example.com;2026-02-15T12:00:00Z;Experienced with small pets.
+232d853c-2c56-5b14-870f-3ceeda068311;f8c92770-fcbf-536d-b6db-3dee66fe9271;;SUBMITTED;rahul.verma@example.com;2026-03-05T10:00:00Z;Application submitted
+ec85b771-8354-5861-a5b8-bff6ef80906d;f8c92770-fcbf-536d-b6db-3dee66fe9271;SUBMITTED;UNDER_REVIEW;neha.sharma@example.com;2026-03-06T11:00:00Z;Review started
+5025ad40-ade0-5ac1-b80b-2923abc44bc3;f8c92770-fcbf-536d-b6db-3dee66fe9271;UNDER_REVIEW;APPROVED;neha.sharma@example.com;2026-03-10T12:00:00Z;Fenced yard verified.
+142844c2-85b0-5782-914e-7f01c8348e10;7353b39a-e535-5ec3-8c2e-1e4e48fd9118;;SUBMITTED;ananya.iyer@example.com;2026-05-14T10:00:00Z;Application submitted
+c3bd0090-3496-5e40-994e-c3a7aaf120aa;7353b39a-e535-5ec3-8c2e-1e4e48fd9118;SUBMITTED;UNDER_REVIEW;darshan.kumar@example.com;2026-05-15T11:00:00Z;Review started
+ccec27fc-1cb9-58c4-8788-b28b4014d01d;7353b39a-e535-5ec3-8c2e-1e4e48fd9118;UNDER_REVIEW;APPROVED;darshan.kumar@example.com;2026-05-19T12:00:00Z;Indoor home, suitable.
+ac09c172-1311-5541-a1df-3e716d4da99e;b9ea91ae-1ba4-5ea0-945d-e1a6164cb0e9;;SUBMITTED;vikram.singh@example.com;2026-07-01T10:00:00Z;Application submitted
+0ececa13-d042-5fba-a9d0-f00990c66b7c;b9ea91ae-1ba4-5ea0-945d-e1a6164cb0e9;SUBMITTED;UNDER_REVIEW;neha.sharma@example.com;2026-07-02T11:00:00Z;Review started
+44a5f5dc-f7b1-5ead-87ce-9697c2d226c6;b9ea91ae-1ba4-5ea0-945d-e1a6164cb0e9;UNDER_REVIEW;APPROVED;neha.sharma@example.com;2026-07-06T12:00:00Z;First-time adopter, counselling done.
+e3e3a68b-cd15-5083-a4d5-69385671c4b7;e5845521-5fee-58d3-9a83-d9b30e8d589a;;SUBMITTED;sarah.johnson@example.com;2026-10-20T10:00:00Z;Application submitted
+9191b8e2-1a81-52b9-a74f-c9ba3a7dd297;e5845521-5fee-58d3-9a83-d9b30e8d589a;SUBMITTED;UNDER_REVIEW;darshan.kumar@example.com;2026-10-21T11:00:00Z;Review started
+8b518a8f-b92e-5684-9eae-2670a3c07412;e6034513-9120-54a7-8652-0c6dd3969c07;;SUBMITTED;priya.nair@example.com;2026-10-18T10:00:00Z;Application submitted
+4ea3a0d3-c1ea-53ec-be05-283c23b19da8;e6034513-9120-54a7-8652-0c6dd3969c07;SUBMITTED;UNDER_REVIEW;neha.sharma@example.com;2026-10-19T11:00:00Z;Review started
+7afcd65a-175d-515e-95c2-ac2ea191e527;deeb5736-59ea-57a6-8f6d-d7fb492a34af;;SUBMITTED;arjun.reddy@example.com;2026-10-22T10:00:00Z;Application submitted
+91f71919-6d13-5c8f-849b-08bb0bf91624;e41f7674-6f60-5dab-b19d-3c7d93f4e5bf;;SUBMITTED;rahul.verma@example.com;2026-10-24T10:00:00Z;Application submitted
+59a5f7a4-b9ec-54e3-a424-218ad328f47d;1624a3b9-4bfb-56fa-a68a-9f7e93757142;;SUBMITTED;ananya.iyer@example.com;2026-10-25T10:00:00Z;Application submitted
+a3afa909-aa13-581b-9b5f-3cf3c7e5b97a;5a3ae1a7-9afd-559f-bc00-6ec8b97a681c;;SUBMITTED;kavya.menon@example.com;2026-09-30T10:00:00Z;Application submitted
+6d360b24-65eb-52b4-9db2-9871cb81c4ba;5a3ae1a7-9afd-559f-bc00-6ec8b97a681c;SUBMITTED;UNDER_REVIEW;darshan.kumar@example.com;2026-10-01T11:00:00Z;Review started
+cc083c2c-cd40-5860-9c6e-6264e687d0ce;5a3ae1a7-9afd-559f-bc00-6ec8b97a681c;UNDER_REVIEW;REJECTED;darshan.kumar@example.com;2026-10-03T12:00:00Z;Rental agreement does not allow pets.
+e0d2d946-0428-5b56-b2f5-ffdb4d45b14e;9cbed348-7f90-59ca-9e1d-65d7e6db13c0;;SUBMITTED;rohan.das@example.com;2026-09-02T10:00:00Z;Application submitted
+110edd09-7072-51b7-8481-6ce0b158916a;9cbed348-7f90-59ca-9e1d-65d7e6db13c0;SUBMITTED;UNDER_REVIEW;neha.sharma@example.com;2026-09-03T11:00:00Z;Review started
+a8e336b1-dbd6-5b13-b9f3-90ba125916f2;9cbed348-7f90-59ca-9e1d-65d7e6db13c0;UNDER_REVIEW;REJECTED;neha.sharma@example.com;2026-09-05T12:00:00Z;Animal on medical hold.
+f1cc428a-7ebb-5983-9039-a62deea4abc6;39bac63f-9296-5497-9661-8aa6a5c50661;;SUBMITTED;sarah.johnson@example.com;2026-02-14T10:00:00Z;Application submitted
+ffb30591-3972-5acc-befa-06767e12cd07;39bac63f-9296-5497-9661-8aa6a5c50661;SUBMITTED;WITHDRAWN;sarah.johnson@example.com;2026-02-16T11:00:00Z;Withdrawn by applicant
+13233201-0a34-5ea4-a328-d438534c44ce;5e0b0fdd-0fb1-52a9-9c8d-147e4361d655;;SUBMITTED;vikram.singh@example.com;2026-10-05T10:00:00Z;Application submitted
+0132f8b7-e4f5-5831-a463-3282cf743215;5e0b0fdd-0fb1-52a9-9c8d-147e4361d655;SUBMITTED;WITHDRAWN;vikram.singh@example.com;2026-10-07T11:00:00Z;Withdrawn by applicant

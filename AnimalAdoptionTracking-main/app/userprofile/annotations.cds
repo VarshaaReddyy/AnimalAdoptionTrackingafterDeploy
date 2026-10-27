@@ -5,62 +5,62 @@ annotate service.UsersSrv with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Label : 'createdAt',
+                Label : 'Created At',
                 Value : createdAt,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'modifiedAt',
+                Label : 'Last Changed At',
                 Value : modifiedAt,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'firstName',
+                Label : 'First Name',
                 Value : firstName,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'lastName',
+                Label : 'Last Name',
                 Value : lastName,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'email',
+                Label : 'Email',
                 Value : email,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'phoneNumber',
+                Label : 'Phone',
                 Value : phoneNumber,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'address',
+                Label : 'Address',
                 Value : address,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'city',
+                Label : 'City',
                 Value : city,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'state',
+                Label : 'State',
                 Value : state,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'postalCode',
+                Label : 'Postal Code',
                 Value : postalCode,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'role',
+                Label : 'Role',
                 Value : role,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'status',
+                Label : 'Status',
                 Value : status,
             },
         ],
@@ -76,28 +76,21 @@ annotate service.UsersSrv with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            Label : 'createdAt',
-            Value : createdAt,
-        },
-        {
-            $Type : 'UI.DataField',
-            Label : 'modifiedAt',
-            Value : modifiedAt,
-        },
-        {
-            $Type : 'UI.DataField',
-            Label : 'firstName',
+            Label : 'First Name',
             Value : firstName,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
         },
         {
             $Type : 'UI.DataField',
-            Label : 'lastName',
+            Label : 'Last Name',
             Value : lastName,
+            ![@HTML5.CssDefaults] : { width : '8rem' }
         },
         {
             $Type : 'UI.DataField',
-            Label : 'email',
+            Label : 'Email',
             Value : email,
+            ![@HTML5.CssDefaults] : { width : '14rem' }
         },
         {
             $Type : 'UI.DataFieldForAction',
@@ -107,3 +100,19 @@ annotate service.UsersSrv with @(
     ],
 );
 
+
+
+// Edit Profile dialog opens pre-filled with the current values;
+// email is the login identity and is not editable here
+annotate service.UsersSrv actions {
+    editProfile(
+        firstName   @UI.ParameterDefaultValue : { $edmJson : { $Path : 'in/firstName' } }   @title : 'First Name',
+        lastName    @UI.ParameterDefaultValue : { $edmJson : { $Path : 'in/lastName' } }    @title : 'Last Name',
+        email       @UI.Hidden,
+        phoneNumber @UI.ParameterDefaultValue : { $edmJson : { $Path : 'in/phoneNumber' } } @title : 'Phone',
+        address     @UI.ParameterDefaultValue : { $edmJson : { $Path : 'in/address' } }     @title : 'Address',
+        city        @UI.ParameterDefaultValue : { $edmJson : { $Path : 'in/city' } }        @title : 'City',
+        state       @UI.ParameterDefaultValue : { $edmJson : { $Path : 'in/state' } }       @title : 'State',
+        postalCode  @UI.ParameterDefaultValue : { $edmJson : { $Path : 'in/postalCode' } }  @title : 'Postal Code'
+    );
+};

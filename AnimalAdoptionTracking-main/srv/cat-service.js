@@ -14,6 +14,13 @@ module.exports = cds.service.impl(async function () {
 
     } = this.entities;
 
+    // Keep only the fields the user actually filled, so a blank field
+    // in an edit dialog never overwrites the saved value
+    const onlyFilled = (data) => Object.fromEntries(
+        Object.entries(data).filter(([, value]) => value !== undefined && value !== null && value !== "")
+    );
+
+
     // ==========================================================
 // APPLICATION STATUS SUMMARY
 // ==========================================================
@@ -42,7 +49,7 @@ this.on("editShelter", "SheltersSrv", async (req) => {
     } = req.data;
 
     await UPDATE("db.Shelters")
-        .set({
+        .set(onlyFilled({
             shelterName,
             shelterCode,
             addressLine1,
@@ -61,7 +68,7 @@ this.on("editShelter", "SheltersSrv", async (req) => {
             shelterType,
             licenseNumber,
             modifiedAt: new Date()
-        })
+        }))
         .where({ ID });
 
     return await SELECT.one
@@ -88,7 +95,7 @@ this.on("editHealthRecord", "HealthRecordsSrv", async (req) => {
     } = req.data;
 
     await UPDATE("db.HealthRecords")
-        .set({
+        .set(onlyFilled({
             animal_ID: animalID,
             checkupDate,
             healthStatus,
@@ -101,7 +108,7 @@ this.on("editHealthRecord", "HealthRecordsSrv", async (req) => {
             remarks,
             medicalDocument,
             modifiedAt: new Date()
-        })
+        }))
         .where({ ID });
 
     return await SELECT.one
@@ -125,7 +132,7 @@ this.on("editInspection", "InspectionsSrv", async (req) => {
     } = req.data;
 
     await UPDATE("db.Inspections")
-        .set({
+        .set(onlyFilled({
             adoption_ID: adoptionID,
             inspector_ID: inspectorID,
             inspectionDate,
@@ -135,7 +142,7 @@ this.on("editInspection", "InspectionsSrv", async (req) => {
             remarks,
             inspectionDocument,
             modifiedAt: new Date()
-        })
+        }))
         .where({ ID });
 
     return await SELECT.one
@@ -162,7 +169,7 @@ this.on("editAnimal", "AnimalsSrv", async (req) => {
     } = req.data;
 
     await UPDATE(AnimalsSrv)
-        .set({
+        .set(onlyFilled({
             shelter_ID: shelterID,
             name,
             species,
@@ -176,7 +183,7 @@ this.on("editAnimal", "AnimalsSrv", async (req) => {
             photo,
             description,
             modifiedAt: new Date()
-        })
+        }))
         .where({ ID: animalID });
 
     return await SELECT.one
@@ -243,28 +250,22 @@ this.on("READ", "ApplicationStatusSummary", async () => {
 this.on("READ", "AdoptionTrend", async () => {
 
     const adoptions =
-        await SELECT.from(AdoptionsSrv);
+        await SELECT.from(AdoptionsSrv).columns("adoptionDate");
 
+    // Group by calendar month ("2026-04"), then sort oldest -> newest
     const monthMap = {};
 
     adoptions.forEach(record => {
-
         if (record.adoptionDate) {
-
-            const month =
-                new Date(record.adoptionDate)
-                    .toLocaleString("en-US", {
-                        month: "short"
-                    });
-
-            monthMap[month] =
-                (monthMap[month] || 0) + 1;
+            const key = String(record.adoptionDate).slice(0, 7);
+            monthMap[key] = (monthMap[key] || 0) + 1;
         }
     });
 
-    return Object.keys(monthMap).map(month => ({
-        month: month,
-        count: monthMap[month]
+    return Object.keys(monthMap).sort().map(key => ({
+        month: new Date(key + "-01T00:00:00Z")
+            .toLocaleString("en-US", { month: "short", year: "2-digit", timeZone: "UTC" }),
+        count: monthMap[key]
     }));
 });
 
@@ -288,6 +289,7 @@ this.on("READ", "ShelterOccupancy", async () => {
 
         return {
             shelterName: shelter.shelterName,
+            city: shelter.city,
             capacity: Number(shelter.capacity || 0),
             currentOccupancy:
                 Number(shelter.currentOccupancy || 0),
@@ -345,7 +347,7 @@ this.on("READ", "AnimalCategorySummary", async () => {
 
     const pendingApplications =
         await SELECT.one.from(AdoptionApplicationsSrv)
-            .where({ status: 'UNDER_REVIEW' })
+            .where({ status: { in: ['SUBMITTED', 'UNDER_REVIEW'] } })
             .columns`count(*) as count`;
 
     const totalShelters =
@@ -703,131 +705,168 @@ this.on("READ", "AnimalCategorySummary", async () => {
     }
     });
 
-    this.on("approveApplication", async (req) => {
+    // ==========================================================
+    // HEALTH: eligibility, checkup status, change history
+    // (FR-ADM-014 / 015 / 016)
+    // ==========================================================
 
-    const ID = req.params[0].ID;
+    const health = require("./lib/health");
+    const { HealthRecords: HealthRecordsDB } = cds.entities("db");
 
-    const tx = cds.tx(req);
+    this.after("READ", "AnimalsSrv", health.addAdoptionEligibility);
+    this.after("READ", "HealthRecordsSrv", health.addCheckupStatus);
 
-    try {
+    // Saving a health record (Save button) -> log each changed field
+    this.before("UPDATE", "HealthRecordsSrv", async (req) => {
+        const ID = req.data.ID ?? req.params[0]?.ID ?? req.params[0];
+        req._healthBefore = await SELECT.one.from(HealthRecordsDB).where({ ID });
+    });
 
-        const application = await tx.run(
-            SELECT.one
-                .from(AdoptionApplicationsSrv)
-                .where({ ID })
-        );
+    this.after("UPDATE", "HealthRecordsSrv", async (result, req) => {
+        const ID = req.data.ID ?? req.params[0]?.ID ?? req.params[0];
+        await health.logHealthRecordChanges(req, req._healthBefore, { ...req.data, ID });
+    });
 
+    this.after("CREATE", "HealthRecordsSrv", async (result, req) => {
+        await health.logHealthRecordChanges(req, null, { ...req.data, ...(result || {}) });
+    });
+
+
+    // ==========================================================
+    // APPLICATION REVIEW (FR-ADM-007 / 008 / 009)
+    // Workflow: SUBMITTED -> UNDER_REVIEW -> APPROVED | REJECTED
+    // Every status change writes one ApplicationStatusHistory row.
+    // ==========================================================
+
+    const { ApplicationStatusHistorySrv } = this.entities;
+
+    const OPEN_STATUSES = ["SUBMITTED", "UNDER_REVIEW"];
+
+    // Users row of the logged-in admin (matched by login email)
+    const getReviewerID = async (req) => {
+        const email = (req.user.attr?.email || req.user.id).toLowerCase();
+        const reviewer = await SELECT.one.from(UsersSrv).columns("ID").where({ email });
+        return reviewer ? reviewer.ID : null;
+    };
+
+    const writeHistory = async (req, applicationID, oldStatus, newStatus, remarks) => {
+        await INSERT.into(ApplicationStatusHistorySrv).entries({
+            ID: cds.utils.uuid(),
+            application_ID: applicationID,
+            oldStatus,
+            newStatus,
+            changedBy: req.user.id,
+            changedAt: new Date(),
+            remarks
+        });
+    };
+
+    const getOpenApplication = async (req) => {
+        const ID = req.params[0].ID ?? req.params[0];
+        const application = await SELECT.one.from(AdoptionApplicationsSrv).where({ ID });
         if (!application) {
-            req.error(404, "Application not found");
+            req.reject(404, "Application not found");
+        }
+        if (!OPEN_STATUSES.includes(application.status)) {
+            req.reject(400, `Application is already ${application.status} and cannot be changed.`);
+        }
+        return application;
+    };
+
+
+    this.on("markUnderReview", async (req) => {
+
+        const application = await getOpenApplication(req);
+
+        if (application.status !== "SUBMITTED") {
+            req.reject(400, "Only submitted applications can be moved to Under Review.");
         }
 
-        await tx.run(
-            UPDATE(AdoptionApplicationsSrv)
-                .set({
-                    status: "APPROVED",
-                    modifiedAt: new Date()
-                })
-                .where({ ID })
-        );
+        await UPDATE(AdoptionApplicationsSrv)
+            .set({ status: "UNDER_REVIEW", reviewedBy_ID: await getReviewerID(req) })
+            .where({ ID: application.ID });
 
-        await tx.run(
-            UPDATE(AnimalsSrv)
-                .set({
-                    animalStatus: "ADOPTED",
-                    modifiedAt: new Date()
-                })
-                .where({
-                    ID: application.animal_ID
-                })
-        );
+        await writeHistory(req, application.ID, application.status, "UNDER_REVIEW", "Review started");
 
-        const existingAdoption = await tx.run(
-            SELECT.one
-                .from(AdoptionsSrv)
-                .where({
-                    application_ID: application.ID
-                })
-        );
+        return "Application moved to Under Review";
+    });
+
+
+    this.on("approveApplication", async (req) => {
+
+        const application = await getOpenApplication(req);
+        const reviewerID = await getReviewerID(req);
+
+        // 1. Approve this application
+        await UPDATE(AdoptionApplicationsSrv)
+            .set({ status: "APPROVED", reviewedBy_ID: reviewerID })
+            .where({ ID: application.ID });
+
+        await writeHistory(req, application.ID, application.status, "APPROVED", "Application approved");
+
+        // 2. The animal is now adopted
+        await UPDATE(AnimalsSrv)
+            .set({ animalStatus: "ADOPTED" })
+            .where({ ID: application.animal_ID });
+
+        // 3. Close the other open applications for the same animal
+        const others = await SELECT.from(AdoptionApplicationsSrv)
+            .columns("ID", "status")
+            .where({
+                animal_ID: application.animal_ID,
+                ID: { "!=": application.ID },
+                status: { in: OPEN_STATUSES }
+            });
+
+        for (const other of others) {
+            const reason = "Animal has been adopted by another applicant.";
+            await UPDATE(AdoptionApplicationsSrv)
+                .set({ status: "REJECTED", staffRemarks: reason, reviewedBy_ID: reviewerID })
+                .where({ ID: other.ID });
+            await writeHistory(req, other.ID, other.status, "REJECTED", reason);
+        }
+
+        // 4. Create the adoption record automatically (FR-ADM-010)
+        const existingAdoption = await SELECT.one.from(AdoptionsSrv)
+            .where({ application_ID: application.ID });
 
         if (!existingAdoption) {
-
-            await tx.run(
-                INSERT.into(AdoptionsSrv).entries({
-                    application_ID: application.ID,
-                    animal_ID: application.animal_ID,
-                    adoptionDate: new Date(),
-                    status: "PENDING",
-                    createdAt: new Date(),
-                    modifiedAt: new Date(),
-                    remarks: "Generated automatically after approval"
-                })
-            );
-
+            await INSERT.into(AdoptionsSrv).entries({
+                ID: cds.utils.uuid(),
+                application_ID: application.ID,
+                animal_ID: application.animal_ID,
+                adoptionDate: new Date().toISOString().slice(0, 10),
+                status: "PENDING",
+                completedBy_ID: reviewerID,
+                remarks: "Generated automatically after approval"
+            });
         }
 
         return "Application Approved";
-
-    } catch (error) {
-
-        req.error(500, error.message);
-
-    }
-
-});
+    });
 
 
-   this.on("rejectApplication", async (req) => {
+    this.on("rejectApplication", async (req) => {
 
-    const ID = req.params[0].ID;
+        const reason = (req.data.reason || "").trim();
 
-    const tx = cds.tx(req);
+        if (!reason) {
+            req.reject(400, "Please enter a rejection reason.");
+        }
 
-    try {
+        const application = await getOpenApplication(req);
 
-        await tx.run(
-            UPDATE(AdoptionApplicationsSrv)
-                .set({
-                    status: "REJECTED",
-                    modifiedAt: new Date()
-                })
-                .where({ ID })
-        );
+        await UPDATE(AdoptionApplicationsSrv)
+            .set({
+                status: "REJECTED",
+                staffRemarks: reason,          // shown to the applicant (FR-USR-010)
+                reviewedBy_ID: await getReviewerID(req)
+            })
+            .where({ ID: application.ID });
+
+        await writeHistory(req, application.ID, application.status, "REJECTED", reason);
 
         return "Application Rejected";
-
-    } catch (error) {
-
-        req.error(500, error.message);
-
-    }
-
-});
-
-    this.on('createAdoption', async (request, response) => {
-
-    const adoptionData = {
-        application_ID: request.data.applicationID,
-        animal_ID: request.data.animalID,
-        adoptionDate: request.data.adoptionDate,
-        status: request.data.status,
-        completedBy_ID: request.data.completedByID,
-        remarks: request.data.remarks,
-        createdAt: new Date(),
-        modifiedAt: new Date()
-    };
-
-    const objTransaction = cds.tx(request);
-
-    try {
-        await objTransaction.run(
-            INSERT.into(AdoptionsSrv).entries(adoptionData)
-        );
-
-        return adoptionData;
-
-    } catch (err) {
-        request.error(500, 'There is an error: ' + err.message);
-    }
     });
 
 
@@ -980,25 +1019,6 @@ this.on("READ", "AnimalCategorySummary", async () => {
             const objTransaction = cds.tx(request);
 
             await objTransaction.delete(AdoptionApplicationsSrv).where({
-                ID:ID
-            })
-            return "Successfully updated";
-        }catch(error){
-            request.error("Error : ",error)
-        }
-        
-    });
-
-    this.on('deleteAdoption', async (request ,response)=>{
-        
-        const{
-            ID
-        } = request.data;
-
-        try{
-            const objTransaction = cds.tx(request);
-
-            await objTransaction.delete(AdoptionsSrv).where({
                 ID:ID
             })
             return "Successfully updated";

@@ -5,42 +5,42 @@ annotate service.InspectionsSrv with @(
         Data : [
             {
                 $Type : 'UI.DataField',
-                Label : 'createdAt',
+                Label : 'Created At',
                 Value : createdAt,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'modifiedAt',
+                Label : 'Last Changed At',
                 Value : modifiedAt,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'inspectionDate',
+                Label : 'Inspection Date',
                 Value : inspectionDate,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'inspectionType',
+                Label : 'Inspection Type',
                 Value : inspectionType,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'existingPetDetails',
+                Label : 'Existing Pet Details',
                 Value : existingPetDetails,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'result',
+                Label : 'Result',
                 Value : result,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'remarks',
+                Label : 'Remarks',
                 Value : remarks,
             },
             {
                 $Type : 'UI.DataField',
-                Label : 'inspectionDocument',
+                Label : 'Inspection Document',
                 Value : inspectionDocument,
             },
         ],
@@ -67,14 +67,6 @@ annotate service.InspectionsSrv with {
             },
             {
                 $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'createdAt',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'modifiedAt',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
                 ValueListProperty : 'adoptionDate',
             },
             {
@@ -94,14 +86,6 @@ annotate service.InspectionsSrv with {
                 $Type : 'Common.ValueListParameterInOut',
                 LocalDataProperty : inspector_ID,
                 ValueListProperty : 'ID',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'createdAt',
-            },
-            {
-                $Type : 'Common.ValueListParameterDisplayOnly',
-                ValueListProperty : 'modifiedAt',
             },
             {
                 $Type : 'Common.ValueListParameterDisplayOnly',

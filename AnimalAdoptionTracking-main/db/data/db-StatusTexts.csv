@@ -1,0 +1,39 @@
+type;code;text
+UserRole;ADOPTER;Adopter
+UserRole;SHELTER_STAFF;Shelter Staff
+UserRole;ADMIN;Administrator
+UserStatus;ACTIVE;Active
+UserStatus;INACTIVE;Inactive
+UserStatus;SUSPENDED;Suspended
+AnimalStatus;AVAILABLE;Available
+AnimalStatus;RESERVED;Reserved
+AnimalStatus;ADOPTED;Adopted
+AnimalStatus;MEDICAL_HOLD;Medical Hold
+AnimalStatus;QUARANTINE;Quarantine
+VaccinationStatus;PENDING;Not Vaccinated
+VaccinationStatus;PARTIAL;Partially Vaccinated
+VaccinationStatus;COMPLETED;Vaccinated
+ApplicationStatus;SUBMITTED;Submitted
+ApplicationStatus;UNDER_REVIEW;Under Review
+ApplicationStatus;APPROVED;Approved
+ApplicationStatus;REJECTED;Rejected
+ApplicationStatus;WITHDRAWN;Withdrawn
+AdoptionStatus;PENDING;Pending
+AdoptionStatus;COMPLETED;Completed
+AdoptionStatus;CANCELLED;Cancelled
+InspectionType;HOME_VISIT;Home Visit
+InspectionType;FOLLOW_UP;Follow-up
+InspectionType;FINAL_REVIEW;Final Review
+InspectionResult;PASS;Pass
+InspectionResult;FAIL;Fail
+InspectionResult;PENDING;Pending
+HealthStatus;HEALTHY;Healthy
+HealthStatus;UNDER_TREATMENT;Under Treatment
+HealthStatus;CRITICAL;Critical
+HealthStatus;RECOVERED;Recovered
+ShelterType;GOVERNMENT;Government
+ShelterType;PRIVATE;Private
+ShelterType;NGO;NGO
+ShelterType;RESCUE_CENTER;Rescue Center
+YesNo;YES;Yes
+YesNo;NO;No
