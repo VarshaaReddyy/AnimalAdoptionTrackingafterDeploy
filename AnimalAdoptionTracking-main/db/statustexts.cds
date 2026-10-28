@@ -1,12 +1,6 @@
 using { db } from './schema';
 
-// ==========================================================
-// STATUS TEXTS (code list)
-// Readable names for every status / type code, used by the Fiori
-// pages for display ("Under Review" instead of UNDER_REVIEW) and as
-// dropdowns in the edit forms. No existing column changes: the
-// associations below are joins only, and the codes stay as they are.
-// ==========================================================
+
 
 entity db.StatusTexts {
     key type : String(40);   // name of the code type, e.g. 'AnimalStatus'

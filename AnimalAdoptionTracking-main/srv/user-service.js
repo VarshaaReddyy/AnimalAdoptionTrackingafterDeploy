@@ -13,13 +13,10 @@ module.exports = cds.service.impl(async function () {
         ApplicationStatusHistorySrv
     } = this.entities;
 
-        // ==========================================================
-    // CURRENT USER: find (or create) the Users row for the login
-    // ==========================================================
-
+        
     const getCurrentUserID = async (req) => {
 
-        // With XSUAA, req.user.id is the login email
+        
         const email =
             (req.user.attr?.email || req.user.id).toLowerCase();
 
@@ -32,7 +29,7 @@ module.exports = cds.service.impl(async function () {
             return user.ID;
         }
 
-        // First login: create the adopter profile (FR-USR-001)
+       
         const ID = cds.utils.uuid();
 
         await INSERT.into(UsersSrv).entries({
@@ -48,10 +45,7 @@ module.exports = cds.service.impl(async function () {
 
         return ID;
     };
-    // ==========================================================
-    // APPLY FOR ADOPTION
-    // ==========================================================
-
+   
     this.on("applyForAdoption", async (req) => {
 
         try {
@@ -65,19 +59,12 @@ module.exports = cds.service.impl(async function () {
             } = req.data;
 
 
-            // --------------------------------------------------
-            // SAMPLE USER ID
-            // Later this will come from authentication.
-            // --------------------------------------------------
-
+           
             const applicantID =
                 await getCurrentUserID(req);
 
 
-            // --------------------------------------------------
-            // Check animal exists
-            // --------------------------------------------------
-
+            
             const animal = await SELECT.one
                 .from(AnimalsSrv)
                 .where({
@@ -93,10 +80,7 @@ module.exports = cds.service.impl(async function () {
             }
 
 
-            // --------------------------------------------------
-            // Check animal availability
-            // --------------------------------------------------
-
+            
             if (animal.animalStatus !== "AVAILABLE") {
 
                 return req.error(
@@ -107,10 +91,7 @@ module.exports = cds.service.impl(async function () {
             }
 
 
-            // --------------------------------------------------
-            // Prevent duplicate active application
-            // --------------------------------------------------
-
+            
             const existingApplication =
                 await SELECT.one
                     .from(AdoptionApplicationsSrv)
@@ -131,9 +112,7 @@ module.exports = cds.service.impl(async function () {
             }
 
 
-            // --------------------------------------------------
-            // Create application
-            // --------------------------------------------------
+            
 
             const applicationData = {
 
@@ -154,7 +133,7 @@ module.exports = cds.service.impl(async function () {
 
                 ID: cds.utils.uuid(),
 
-                // New applications start as Submitted (FRD workflow)
+              
                 status: "SUBMITTED"
             };
 
@@ -174,9 +153,7 @@ module.exports = cds.service.impl(async function () {
             });
 
 
-            // --------------------------------------------------
-            // Return created application
-            // --------------------------------------------------
+            
 
             const createdApplication =
                 await SELECT.one
@@ -203,9 +180,7 @@ module.exports = cds.service.impl(async function () {
     });
 
 
-    // ==========================================================
-    // USER DASHBOARD STATISTICS
-    // ==========================================================
+
 
     this.on(
         "READ",
@@ -273,9 +248,6 @@ module.exports = cds.service.impl(async function () {
         }
     );
 
-    // ==========================================================
-    // HEALTH INFORMATION for adopters (FR-USR-004 / 016 / 017)
-    // ==========================================================
 
     const health = require("./lib/health");
 
@@ -283,11 +255,7 @@ module.exports = cds.service.impl(async function () {
     this.after("READ", "HealthRecordsSrv", health.addCheckupStatus);
 
 
-    // ==========================================================
-    // ROW-LEVEL ACCESS: a user only sees their own records.
-    // "before READ" adds a filter, so search, sorting, $count and
-    // object pages (single record by key) keep working.
-    // ==========================================================
+    
 
     this.before("READ", "AdoptionApplicationsSrv", async (req) => {
         req.query.where({ applicant_ID: await getCurrentUserID(req) });
@@ -310,7 +278,7 @@ module.exports = cds.service.impl(async function () {
     });
 
 
-    // Users may change only their own profile
+  
     this.before(["UPDATE", "DELETE"], "UsersSrv", async (req) => {
         if (req.data.ID && req.data.ID !== await getCurrentUserID(req)) {
             req.reject(403, "You can only change your own profile.");
@@ -318,8 +286,6 @@ module.exports = cds.service.impl(async function () {
     });
 
 
-    // Applications: new ones always belong to the user and start Submitted;
-    // they can be changed or deleted only while still Submitted (FR-USR-007)
     this.before("CREATE", "AdoptionApplicationsSrv", async (req) => {
         req.data.applicant_ID = await getCurrentUserID(req);
         req.data.status = "SUBMITTED";
@@ -343,9 +309,7 @@ module.exports = cds.service.impl(async function () {
     });
 
 
-    // ==========================================================
-    // WITHDRAW APPLICATION (FR-USR-008): only before review
-    // ==========================================================
+   
 
     this.on("withdrawApplication", async (req) => {
 
@@ -400,7 +364,7 @@ module.exports = cds.service.impl(async function () {
         .set(Object.fromEntries(Object.entries({
             firstName,
             lastName,
-            // email is the login identity and is not changed here
+           
             phoneNumber,
             address,
             city,

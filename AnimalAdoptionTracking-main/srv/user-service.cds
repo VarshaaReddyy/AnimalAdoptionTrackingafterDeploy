@@ -8,11 +8,6 @@ using {
 @requires: 'User'
 service UserCatalogService {
 
-    // ==========================================================
-    // ANIMALS
-    // User can READ animals and use Apply for Adoption.
-    // User cannot create, edit, or delete animals.
-    // ==========================================================
 
     @readonly
     entity AnimalsSrv as projection on my.Animals
@@ -27,11 +22,6 @@ service UserCatalogService {
     };
 
 
-    // ==========================================================
-    // APPLICATIONS
-    // User can create an application.
-    // Admin will see the same application through CatalogService.
-    // ==========================================================
 
     entity AdoptionApplicationsSrv
         as projection on my.AdoptionApplications
@@ -41,60 +31,39 @@ service UserCatalogService {
         };
 
 
-    // ==========================================================
-    // APPLICATION STATUS HISTORY (own applications only, FR-USR-011)
-    // ==========================================================
+
 
     @readonly
     entity ApplicationStatusHistorySrv
         as projection on my.ApplicationStatusHistory;
 
 
-    // Readable texts for status codes (display + dropdowns)
+    
     @readonly
     entity StatusTexts as projection on my.StatusTexts;
 
-    // ==========================================================
-    // POST-ADOPTION INSPECTIONS (own adoptions only, FR-USR-019)
-    // ==========================================================
+ 
 
     @readonly
     entity InspectionsSrv as projection on my.Inspections;
 
 
-    // ==========================================================
-    // ADOPTIONS
-    // User can only READ adoption information.
-    // Admin manages adoptions.
-    // ==========================================================
 
     @readonly
     entity AdoptionsSrv as projection on my.Adoptions;
 
 
-    // ==========================================================
-    // HEALTH RECORDS
-    // User can only READ.
-    // ==========================================================
+
 
     @readonly
     entity HealthRecordsSrv as projection on my.HealthRecords;
 
 
-    // ==========================================================
-    // SHELTERS
-    // User can only READ shelter information.
-    // ==========================================================
 
     @readonly
     entity SheltersSrv as projection on my.Shelters;
 
 
-    // ==========================================================
-    // USERS / PROFILE
-    // Keep writable for now because we will later restrict
-    // this to the logged-in user's own profile.
-    // ==========================================================
 
     entity UsersSrv as projection on my.Users
     actions {
@@ -111,10 +80,6 @@ service UserCatalogService {
     };
 
 
-    // ==========================================================
-    // USER DASHBOARD
-    // ==========================================================
-
     @readonly
     entity UserDashboardStats {
         key ID                  : String;
@@ -126,3 +91,16 @@ service UserCatalogService {
     }
 
 }
+
+
+
+
+annotate UserCatalogService.UsersSrv with @odata.draft.enabled;
+
+annotate UserCatalogService.UsersSrv with @(
+    Capabilities.InsertRestrictions : { Insertable : false }
+) {
+    email  @readonly;
+    role   @readonly;
+    status @readonly;
+};

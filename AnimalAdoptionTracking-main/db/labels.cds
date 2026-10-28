@@ -1,11 +1,5 @@
 using { db } from './schema';
 
-// ==========================================================
-// FIELD LABELS
-// Readable names used by every Fiori page (columns, filters,
-// forms, value helps) when no explicit label is given.
-// UI text only: nothing in the database changes.
-// ==========================================================
 
 annotate db.Users with {
     ID          @title : 'User ID';
@@ -117,10 +111,6 @@ annotate db.ApplicationStatusHistory with {
 };
 
 
-// ==========================================================
-// RELATED RECORDS SHOWN BY NAME (not by ID) in tables, forms
-// and value helps; technical IDs hidden in the UI
-// ==========================================================
 
 annotate db.Animals with {
     ID      @UI.Hidden;

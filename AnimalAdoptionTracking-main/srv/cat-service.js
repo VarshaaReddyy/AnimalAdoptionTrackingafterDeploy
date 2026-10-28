@@ -14,16 +14,12 @@ module.exports = cds.service.impl(async function () {
 
     } = this.entities;
 
-    // Keep only the fields the user actually filled, so a blank field
-    // in an edit dialog never overwrites the saved value
+
     const onlyFilled = (data) => Object.fromEntries(
         Object.entries(data).filter(([, value]) => value !== undefined && value !== null && value !== "")
     );
 
 
-    // ==========================================================
-// APPLICATION STATUS SUMMARY
-// ==========================================================
 this.on("editShelter", "SheltersSrv", async (req) => {
 
     const ID = req.params[0].ID;
@@ -270,9 +266,7 @@ this.on("READ", "AdoptionTrend", async () => {
 });
 
 
-// ==========================================================
-// SHELTER OCCUPANCY
-// ==========================================================
+
 
 this.on("READ", "ShelterOccupancy", async () => {
 
@@ -303,9 +297,6 @@ this.on("READ", "ShelterOccupancy", async () => {
 });
 
 
-// ==========================================================
-// ANIMAL CATEGORY SUMMARY
-// ==========================================================
 
 this.on("READ", "AnimalCategorySummary", async () => {
 

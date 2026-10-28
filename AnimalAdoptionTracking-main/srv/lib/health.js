@@ -1,11 +1,5 @@
 const cds = require("@sap/cds");
 
-// ==========================================================
-// HEALTH HELPERS (shared by CatalogService and UserCatalogService)
-//
-// Criticality values used by Fiori colours:
-//   0 = neutral (grey), 1 = negative (red), 2 = critical (orange), 3 = positive (green)
-// ==========================================================
 
 const DUE_SOON_DAYS = 7;
 
@@ -14,7 +8,6 @@ const asArray = (results) =>
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-// Latest health record (by checkup date) for each animal
 async function latestHealthByAnimal(animalIDs) {
 
     const { HealthRecords } = cds.entities("db");
@@ -38,9 +31,7 @@ async function latestHealthByAnimal(animalIDs) {
 }
 
 
-// ----------------------------------------------------------
-// FR-ADM-016 / FR-USR-016: adoption eligibility of animals
-// ----------------------------------------------------------
+
 async function addAdoptionEligibility(results) {
 
     const rows = asArray(results).filter(row => row && row.ID);
@@ -48,7 +39,6 @@ async function addAdoptionEligibility(results) {
         return;
     }
 
-    // The page may not have requested status fields, so read them
     const { Animals } = cds.entities("db");
     const ids = [...new Set(rows.map(row => row.ID))];
 
@@ -90,11 +80,7 @@ async function addAdoptionEligibility(results) {
 }
 
 
-// ----------------------------------------------------------
-// FR-ADM-014 / FR-USR-017: checkup status of health records
-// Only the latest record of each animal carries the "next checkup";
-// older records are shown as "Completed".
-// ----------------------------------------------------------
+
 async function addCheckupStatus(results) {
 
     const rows = asArray(results).filter(row => row && row.ID);
@@ -147,9 +133,6 @@ async function addCheckupStatus(results) {
 }
 
 
-// ----------------------------------------------------------
-// FR-ADM-015: write one change-log row per changed field
-// ----------------------------------------------------------
 const TRACKED_FIELDS = [
     "animal_ID", "checkupDate", "healthStatus", "diagnosis", "treatment",
     "medication", "veterinarianName", "weight", "nextCheckupDate",

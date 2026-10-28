@@ -95,7 +95,6 @@ type YesNo : String enum {
 };
 
 aspect AuditFields {
-    // Filled automatically by CAP on every insert / update (FR-ADM-005, NFR-006)
     createdAt  : Timestamp   @cds.on.insert: $now;
     createdBy  : String(255) @cds.on.insert: $user;
     modifiedAt : Timestamp   @cds.on.insert: $now  @cds.on.update: $now;

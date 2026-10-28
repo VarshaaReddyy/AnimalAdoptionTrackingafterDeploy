@@ -91,11 +91,6 @@ annotate service.UsersSrv with @(
             Label : 'Email',
             Value : email,
             ![@HTML5.CssDefaults] : { width : '14rem' }
-        },
-        {
-            $Type : 'UI.DataFieldForAction',
-            Action : 'UserCatalogService.editProfile',
-            Label : 'Edit Profile'
         }
     ],
 );
@@ -116,3 +111,14 @@ annotate service.UsersSrv actions {
         postalCode  @UI.ParameterDefaultValue : { $edmJson : { $Path : 'in/postalCode' } }  @title : 'Postal Code'
     );
 };
+
+
+// Profile page title = the user's name (Edit / Save buttons come from draft)
+annotate service.UsersSrv with @(
+    UI.HeaderInfo : {
+        TypeName       : 'Profile',
+        TypeNamePlural : 'My Profile',
+        Title          : { Value : firstName },
+        Description    : { Value : email }
+    }
+);

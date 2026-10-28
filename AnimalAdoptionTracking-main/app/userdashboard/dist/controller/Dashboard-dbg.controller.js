@@ -226,10 +226,19 @@ sap.ui.define([
                     "/useradoptions/index.html";
             },
 
+            // Opens the user's own profile record directly (object page)
             onProfilePress: function () {
 
-                window.location.href =
-                    "/userprofile/index.html";
+                this._get(SERVICE + "UsersSrv?$select=ID&$top=1")
+                    .then(function (oResult) {
+                        var oMe = (oResult.value || [])[0];
+                        window.location.href = oMe
+                            ? "/userprofile/index.html#/UsersSrv(ID=" + oMe.ID + ",IsActiveEntity=true)"
+                            : "/userprofile/index.html";
+                    })
+                    .catch(function () {
+                        window.location.href = "/userprofile/index.html";
+                    });
             }
 
         }

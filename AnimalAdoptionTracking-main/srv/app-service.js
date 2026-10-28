@@ -2,10 +2,6 @@ const cds = require("@sap/cds");
 
 module.exports = cds.service.impl(async function () {
 
-    // ==========================================================
-    // WHO AM I: login id, display name and roles of the caller
-    // ==========================================================
-
     this.on("whoAmI", async (req) => {
 
         const email =
